@@ -1,0 +1,30 @@
+{
+  "name": "architrack-api-orm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "test": "vitest --coverage"
+  },
+  "keywords": [],
+  "author": "Chloe Adonon",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-router": "^0.0.1",
+    "http-errors": "^2.0.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@prisma/client": "^5.10.2",
+    "@vitest/coverage-v8": "^1.2.0",
+    "dotenv": "^16.3.2",
+    "nodemon": "^3.0.3",
+    "prisma": "^5.10.2",
+    "supertest": "^6.3.4",
+    "vitest": "^1.2.0"
+  }
+}

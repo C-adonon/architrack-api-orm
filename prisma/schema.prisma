@@ -12,3 +12,160 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id           Int           @id @default(autoincrement())
+  email        String        @unique
+  password     String
+  firstname    String
+  lastname     String
+  role         Role          @default(STANDARD_USER)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  departement  Department    @relation(fields: [departmentId], references: [id])
+  departmentId Int
+  app          Accountable[]
+  Application  Application?
+}
+
+enum Role {
+  ARCHITECT
+  IT_ACCOUNTABLE
+  BUSINESS_ACCOUNTABLE
+  STANDARD_USER
+}
+
+model Department {
+  id                  Int                   @id @default(autoincrement())
+  name                String                @unique
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  User                User[]
+  Business_Capability Business_Capability[]
+}
+
+model Business_Capability {
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  department   Department    @relation(fields: [departmentId], references: [id])
+  departmentId Int
+  Application  Application[]
+}
+
+model Accountable {
+  app       Application @relation(fields: [appId], references: [id])
+  appId     Int
+  pic       User        @relation(fields: [picId], references: [id])
+  picId     Int
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@id([appId, picId])
+}
+
+model Application {
+  id                   Int                 @id @default(autoincrement())
+  name                 String              @unique
+  description          String?
+  version              String?
+  contractType         Contract_type
+  state                State
+  criticality          Criticality
+  validationStatus     Validation_status
+  hostingType          Hosting_type
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  author               User                @relation(fields: [authorId], references: [id])
+  authorId             Int                 @unique
+  businessCapability   Business_Capability @relation(fields: [businessCapabilityId], references: [id])
+  businessCapabilityId Int
+  provider             Provider            @relation(fields: [providerId], references: [id])
+  providerId           Int
+  application_type     Application_type    @relation(fields: [applicationTypeId], references: [id])
+  applicationTypeId    Int
+  pic                  Accountable[]
+  Language             Language[]
+  Software             Software[]
+}
+
+enum Contract_type {
+  FREEWARE
+  OPEN_SOURCE
+  COMMERCIAL
+  INTERNAL
+  EXTERNAL
+  UNKNOWN
+}
+
+enum State {
+  PROD
+  DEV
+  DEPRECATED
+  MAINTENANCE
+  UNKNOWN
+}
+
+enum Validation_status {
+  DRAFT
+  VALIDATED
+  TO_BE_VALIDATED
+  REJECTED
+  ARCHIVED
+  UNKNOWN
+}
+
+enum Criticality {
+  HIGH
+  MEDIUM
+  LOW
+  UNKNOWN
+}
+
+enum Hosting_type {
+  ON_PREMISE
+  CLOUD
+  HYBRID
+  UNKNOWN
+}
+
+model Application_type {
+  id          Int           @id @default(autoincrement())
+  name        String        @unique
+  description String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Application Application[]
+}
+
+model Provider {
+  id          Int           @id @default(autoincrement())
+  name        String        @unique
+  location    String?
+  logo        String?
+  description String?
+  url         String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Application Application[]
+}
+
+model Language {
+  id          Int           @id @default(autoincrement())
+  name        String        @unique
+  description String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Application Application[]
+}
+
+model Software {
+  id          Int           @id @default(autoincrement())
+  name        String        @unique
+  description String?
+  version     String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Application Application[]
+}

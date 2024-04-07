@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon server.js",
-    "faker": "nodemon tests/populate.js",
+    "faker": "nodemon database/seeder.js",
     "test": "vitest --coverage"
   },
   "keywords": [],

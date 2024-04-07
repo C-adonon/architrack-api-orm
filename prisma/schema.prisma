@@ -36,15 +36,15 @@ enum Role {
 }
 
 model Department {
-  id                  Int                   @id @default(autoincrement())
-  name                String                @unique
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
-  user                User[]
-  business_capability Business_capability[]
+  id                 Int                  @id @default(autoincrement())
+  name               String               @unique
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  user               User[]
+  businessCapability BusinessCapability[]
 }
 
-model Business_capability {
+model BusinessCapability {
   id           Int           @id @default(autoincrement())
   name         String        @unique
   createdAt    DateTime      @default(now())
@@ -66,31 +66,31 @@ model Accountable {
 }
 
 model Application {
-  id                   String               @id @default(uuid())
-  name                 String               @unique
+  id                   String              @id @default(uuid())
+  name                 String              @unique
   description          String?
   version              String?
-  contractType         Contract_type
+  contractType         ContractType
   state                State
   criticality          Criticality
-  validationStatus     Validation_status
-  hostingType          Hosting_type
-  createdAt            DateTime             @default(now())
-  updatedAt            DateTime             @updatedAt
-  author               User                 @relation(fields: [authorId], references: [id])
+  validationStatus     ValidationStatus
+  hostingType          HostingType
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  author               User                @relation(fields: [authorId], references: [id])
   authorId             Int
-  businessCapability   Business_capability? @relation(fields: [businessCapabilityId], references: [id])
+  businessCapability   BusinessCapability? @relation(fields: [businessCapabilityId], references: [id])
   businessCapabilityId Int?
-  provider             Provider?            @relation(fields: [providerId], references: [id])
+  provider             Provider?           @relation(fields: [providerId], references: [id])
   providerId           Int?
-  application_type     Application_type     @relation(fields: [applicationTypeId], references: [id])
+  applicationType      ApplicationType     @relation(fields: [applicationTypeId], references: [id])
   applicationTypeId    Int
   pic                  Accountable[]
   language             Language[]
   software             Software[]
 }
 
-enum Contract_type {
+enum ContractType {
   FREEWARE
   OPEN_SOURCE
   COMMERCIAL
@@ -107,7 +107,7 @@ enum State {
   UNKNOWN
 }
 
-enum Validation_status {
+enum ValidationStatus {
   DRAFT
   VALIDATED
   TO_BE_VALIDATED
@@ -123,14 +123,14 @@ enum Criticality {
   UNKNOWN
 }
 
-enum Hosting_type {
+enum HostingType {
   ON_PREMISE
   CLOUD
   HYBRID
   UNKNOWN
 }
 
-model Application_type {
+model ApplicationType {
   id          Int           @id @default(autoincrement())
   name        String        @unique
   description String?

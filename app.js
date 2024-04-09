@@ -1,7 +1,6 @@
 // import dependencies
 import express from "express";
 import cors from "cors";
-import root from "./routes/indexRoutes.js";
 
 // initialize app
 export const app = express();
@@ -20,7 +19,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 // TODO: Add routes here
-app.use("/", root);
 
 // Error middleware
 app.use((err, req, res, next) => {

@@ -3,8 +3,8 @@ CREATE TABLE `User` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `email` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
-    `firstname` VARCHAR(191) NOT NULL,
-    `lastname` VARCHAR(191) NOT NULL,
+    `firstname` VARCHAR(191) NULL,
+    `lastname` VARCHAR(191) NULL,
     `role` ENUM('ARCHITECT', 'IT_ACCOUNTABLE', 'BUSINESS_ACCOUNTABLE', 'STANDARD_USER') NOT NULL DEFAULT 'STANDARD_USER',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -26,30 +26,30 @@ CREATE TABLE `Department` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `BusinessCapability` (
+CREATE TABLE `Business_Capability` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `departmentId` INTEGER NOT NULL,
 
-    UNIQUE INDEX `BusinessCapability_name_key`(`name`),
+    UNIQUE INDEX `Business_Capability_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Accountable` (
-    `appId` VARCHAR(191) NOT NULL,
-    `picId` INTEGER NULL,
+    `appId` INTEGER NOT NULL,
+    `picId` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    PRIMARY KEY (`appId`)
+    PRIMARY KEY (`appId`, `picId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Application` (
-    `id` VARCHAR(191) NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NULL,
     `version` VARCHAR(191) NULL,
@@ -60,24 +60,25 @@ CREATE TABLE `Application` (
     `hostingType` ENUM('ON_PREMISE', 'CLOUD', 'HYBRID', 'UNKNOWN') NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
-    `authorId` INTEGER NOT NULL,
-    `businessCapabilityId` INTEGER NULL,
-    `providerId` INTEGER NULL,
+    `createdById` INTEGER NOT NULL,
+    `businessCapabilityId` INTEGER NOT NULL,
+    `providerId` INTEGER NOT NULL,
     `applicationTypeId` INTEGER NOT NULL,
 
     UNIQUE INDEX `Application_name_key`(`name`),
+    UNIQUE INDEX `Application_createdById_key`(`createdById`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `ApplicationType` (
+CREATE TABLE `Application_type` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `ApplicationType_name_key`(`name`),
+    UNIQUE INDEX `Application_type_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -100,6 +101,7 @@ CREATE TABLE `Provider` (
 CREATE TABLE `Language` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -122,7 +124,7 @@ CREATE TABLE `Software` (
 
 -- CreateTable
 CREATE TABLE `_ApplicationToLanguage` (
-    `A` VARCHAR(191) NOT NULL,
+    `A` INTEGER NOT NULL,
     `B` INTEGER NOT NULL,
 
     UNIQUE INDEX `_ApplicationToLanguage_AB_unique`(`A`, `B`),
@@ -131,7 +133,7 @@ CREATE TABLE `_ApplicationToLanguage` (
 
 -- CreateTable
 CREATE TABLE `_ApplicationToSoftware` (
-    `A` VARCHAR(191) NOT NULL,
+    `A` INTEGER NOT NULL,
     `B` INTEGER NOT NULL,
 
     UNIQUE INDEX `_ApplicationToSoftware_AB_unique`(`A`, `B`),
@@ -142,25 +144,25 @@ CREATE TABLE `_ApplicationToSoftware` (
 ALTER TABLE `User` ADD CONSTRAINT `User_departmentId_fkey` FOREIGN KEY (`departmentId`) REFERENCES `Department`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `BusinessCapability` ADD CONSTRAINT `BusinessCapability_departmentId_fkey` FOREIGN KEY (`departmentId`) REFERENCES `Department`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Business_Capability` ADD CONSTRAINT `Business_Capability_departmentId_fkey` FOREIGN KEY (`departmentId`) REFERENCES `Department`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Accountable` ADD CONSTRAINT `Accountable_appId_fkey` FOREIGN KEY (`appId`) REFERENCES `Application`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Accountable` ADD CONSTRAINT `Accountable_picId_fkey` FOREIGN KEY (`picId`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Accountable` ADD CONSTRAINT `Accountable_picId_fkey` FOREIGN KEY (`picId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Application` ADD CONSTRAINT `Application_authorId_fkey` FOREIGN KEY (`authorId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Application` ADD CONSTRAINT `Application_createdById_fkey` FOREIGN KEY (`createdById`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Application` ADD CONSTRAINT `Application_businessCapabilityId_fkey` FOREIGN KEY (`businessCapabilityId`) REFERENCES `BusinessCapability`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Application` ADD CONSTRAINT `Application_businessCapabilityId_fkey` FOREIGN KEY (`businessCapabilityId`) REFERENCES `Business_Capability`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Application` ADD CONSTRAINT `Application_providerId_fkey` FOREIGN KEY (`providerId`) REFERENCES `Provider`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Application` ADD CONSTRAINT `Application_providerId_fkey` FOREIGN KEY (`providerId`) REFERENCES `Provider`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Application` ADD CONSTRAINT `Application_applicationTypeId_fkey` FOREIGN KEY (`applicationTypeId`) REFERENCES `ApplicationType`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Application` ADD CONSTRAINT `Application_applicationTypeId_fkey` FOREIGN KEY (`applicationTypeId`) REFERENCES `Application_type`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `_ApplicationToLanguage` ADD CONSTRAINT `_ApplicationToLanguage_A_fkey` FOREIGN KEY (`A`) REFERENCES `Application`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

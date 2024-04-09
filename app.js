@@ -1,7 +1,7 @@
 // import dependencies
 import express from "express";
 import cors from "cors";
-import root from "./routes/root.js";
+import root from "./routes/indexRoutes.js";
 
 // initialize app
 export const app = express();

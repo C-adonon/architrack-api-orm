@@ -22,10 +22,10 @@ model User {
   role         Role          @default(STANDARD_USER)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  department   Department    @relation(fields: [departmentId], references: [id])
+  departement  Department    @relation(fields: [departmentId], references: [id])
   departmentId Int
   app          Accountable[]
-  application  Application[]
+  Application  Application?
 }
 
 enum Role {
@@ -36,33 +36,33 @@ enum Role {
 }
 
 model Department {
-  id                 Int                  @id @default(autoincrement())
-  name               String               @unique
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  user               User[]
-  businessCapability BusinessCapability[]
+  id                  Int                   @id @default(autoincrement())
+  name                String                @unique
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  User                User[]
+  Business_Capability Business_Capability[]
 }
 
-model BusinessCapability {
+model Business_Capability {
   id           Int           @id @default(autoincrement())
   name         String        @unique
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   department   Department    @relation(fields: [departmentId], references: [id])
   departmentId Int
-  application  Application[]
+  Application  Application[]
 }
 
 model Accountable {
   app       Application @relation(fields: [appId], references: [id])
   appId     String
-  pic       User?       @relation(fields: [picId], references: [id])
-  picId     Int?
+  pic       User        @relation(fields: [picId], references: [id])
+  picId     Int
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 
-  @@id([appId])
+  @@id([appId, picId])
 }
 
 model Application {
@@ -70,27 +70,27 @@ model Application {
   name                 String              @unique
   description          String?
   version              String?
-  contractType         ContractType
+  contractType         Contract_type
   state                State
   criticality          Criticality
-  validationStatus     ValidationStatus
-  hostingType          HostingType
+  validationStatus     Validation_status
+  hostingType          Hosting_type
   createdAt            DateTime            @default(now())
   updatedAt            DateTime            @updatedAt
   author               User                @relation(fields: [authorId], references: [id])
-  authorId             Int
-  businessCapability   BusinessCapability? @relation(fields: [businessCapabilityId], references: [id])
-  businessCapabilityId Int?
-  provider             Provider?           @relation(fields: [providerId], references: [id])
-  providerId           Int?
-  applicationType      ApplicationType     @relation(fields: [applicationTypeId], references: [id])
+  authorId             Int                 @unique
+  businessCapability   Business_Capability @relation(fields: [businessCapabilityId], references: [id])
+  businessCapabilityId Int
+  provider             Provider            @relation(fields: [providerId], references: [id])
+  providerId           Int
+  application_type     Application_type    @relation(fields: [applicationTypeId], references: [id])
   applicationTypeId    Int
   pic                  Accountable[]
-  language             Language[]
-  software             Software[]
+  Language             Language[]
+  Software             Software[]
 }
 
-enum ContractType {
+enum Contract_type {
   FREEWARE
   OPEN_SOURCE
   COMMERCIAL
@@ -107,7 +107,7 @@ enum State {
   UNKNOWN
 }
 
-enum ValidationStatus {
+enum Validation_status {
   DRAFT
   VALIDATED
   TO_BE_VALIDATED
@@ -123,20 +123,20 @@ enum Criticality {
   UNKNOWN
 }
 
-enum HostingType {
+enum Hosting_type {
   ON_PREMISE
   CLOUD
   HYBRID
   UNKNOWN
 }
 
-model ApplicationType {
+model Application_type {
   id          Int           @id @default(autoincrement())
   name        String        @unique
   description String?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  application Application[]
+  Application Application[]
 }
 
 model Provider {
@@ -148,15 +148,16 @@ model Provider {
   url         String?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  application Application[]
+  Application Application[]
 }
 
 model Language {
   id          Int           @id @default(autoincrement())
   name        String        @unique
+  description String?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  application Application[]
+  Application Application[]
 }
 
 model Software {
@@ -166,5 +167,5 @@ model Software {
   version     String?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  application Application[]
+  Application Application[]
 }

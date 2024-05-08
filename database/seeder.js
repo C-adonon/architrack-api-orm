@@ -3,8 +3,9 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// truncate all tables
 async function truncateTables() {
+  await prisma.accountable.deleteMany();
+  await prisma.application.deleteMany();
   await prisma.user.deleteMany();
   await prisma.department.deleteMany();
   await prisma.businessCapability.deleteMany();
@@ -12,20 +13,39 @@ async function truncateTables() {
   await prisma.provider.deleteMany();
   await prisma.software.deleteMany();
   await prisma.language.deleteMany();
-  await prisma.application.deleteMany();
+}
+// Generate fake departments
+// async function createDepartments() {
+//   for (let i = 0; i < 5; i++) {
+//     const department = faker.person.jobArea();
+//     await prisma.department.create({
+//       data: {
+//         name: department,
+//       },
+//     });
+//   }
+// }
+
+async function createDepartments() {
+  const departmentNames = new Set();
+
+  while (departmentNames.size < 5) {
+    const department = faker.person.jobArea();
+
+    // Check if the generated department name is unique
+    if (!departmentNames.has(department)) {
+      await prisma.department.create({
+        data: {
+          name: department,
+        },
+      });
+      // Add the department name to the set to ensure uniqueness
+      departmentNames.add(department);
+    }
+  }
 }
 
 // Generate fake departments
-async function createDepartments() {
-  for (let i = 0; i < 5; i++) {
-    const department = faker.person.jobArea();
-    await prisma.department.create({
-      data: {
-        name: department,
-      },
-    });
-  }
-}
 
 // Generate fake business capabilities
 async function createBusinessCaps() {
@@ -226,15 +246,24 @@ async function createAccountables() {
 
 // truncateTables();
 
-async function seedDatabase() {
+async function firstSeed() {
   try {
-    await createDepartments();
-    await createAppType();
-    await createProviders();
+    // await createDepartments();
+    // await createAppType();
+    // await createProviders();
     await createSoftwares();
-    await createLanguages();
+    // await createLanguages();
+    // await createBusinessCaps();
+  } catch (error) {
+    console.error("Error seeding database:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function secondSeed() {
+  try {
     await createUsers();
-    await createBusinessCaps();
     await createApps();
     await createAccountables();
   } catch (error) {
@@ -243,5 +272,7 @@ async function seedDatabase() {
     await prisma.$disconnect();
   }
 }
-
-seedDatabase();
+// START WITH THE FIRST SEED
+// firstSeed();
+// THEN, COMMENT THE FIRST SEED AND RUN THE SECOND SEED
+// secondSeed();

@@ -5,6 +5,7 @@ import createHttpError from "http-errors";
 import { prismaErrorHandler } from "./middlewares/prismaMiddleware.js";
 import root from "./routes/indexRoutes.js";
 import software from "./routes/softwaresRoutes.js";
+import language from './routes/languagesRoutes.js'
 
 // initialize app
 export const app = express();
@@ -25,6 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 // TODO: Add routes here
 app.use("/", root);
 app.use("/softwares", software);
+app.use("/languages", language);
 
 // Prisma error handler
 app.use(prismaErrorHandler);

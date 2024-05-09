@@ -18,7 +18,7 @@ export const getSoftwareById = async (req, res, next) => {
   try {
     const softwareById = await software.getSoftwareById(id);
     if (!softwareById) next(createHttpError(404, "Software not found"));
-    res.status(200).json(softwareById);
+    else res.status(200).json(softwareById);
   } catch (error) {
     next(error);
   }

@@ -251,7 +251,7 @@ async function firstSeed() {
     // await createDepartments();
     // await createAppType();
     // await createProviders();
-    await createSoftwares();
+    // await createSoftwares();
     // await createLanguages();
     // await createBusinessCaps();
   } catch (error) {

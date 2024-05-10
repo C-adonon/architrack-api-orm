@@ -5,9 +5,10 @@ import createHttpError from "http-errors";
 import { prismaErrorHandler } from "./middlewares/prismaMiddleware.js";
 import root from "./routes/indexRoutes.js";
 import software from "./routes/softwaresRoutes.js";
-import language from './routes/languagesRoutes.js'
+import language from "./routes/languagesRoutes.js";
 import provider from "./routes/providersRoutes.js";
-import applicationTypesRoutes from './routes/applicationTypesRoutes.js'
+import applicationTypes from "./routes/applicationTypesRoutes.js";
+import departments from "./routes/departmentsRoutes.js";
 
 // initialize app
 export const app = express();
@@ -30,7 +31,8 @@ app.use("/", root);
 app.use("/softwares", software);
 app.use("/languages", language);
 app.use("/providers", provider);
-app.use("/applicationtypes", applicationTypesRoutes);
+app.use("/applicationtypes", applicationTypes);
+app.use("/departments", departments);
 
 // Prisma error handler
 app.use(prismaErrorHandler);

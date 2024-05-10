@@ -7,6 +7,7 @@ import root from "./routes/indexRoutes.js";
 import software from "./routes/softwaresRoutes.js";
 import language from './routes/languagesRoutes.js'
 import provider from "./routes/providersRoutes.js";
+import applicationTypesRoutes from './routes/applicationTypesRoutes.js'
 
 // initialize app
 export const app = express();
@@ -29,6 +30,7 @@ app.use("/", root);
 app.use("/softwares", software);
 app.use("/languages", language);
 app.use("/providers", provider);
+app.use("/applicationtypes", applicationTypesRoutes);
 
 // Prisma error handler
 app.use(prismaErrorHandler);

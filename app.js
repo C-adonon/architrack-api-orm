@@ -6,6 +6,7 @@ import { prismaErrorHandler } from "./middlewares/prismaMiddleware.js";
 import root from "./routes/indexRoutes.js";
 import software from "./routes/softwaresRoutes.js";
 import language from './routes/languagesRoutes.js'
+import provider from "./routes/providersRoutes.js";
 
 // initialize app
 export const app = express();
@@ -27,6 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/", root);
 app.use("/softwares", software);
 app.use("/languages", language);
+app.use("/providers", provider);
 
 // Prisma error handler
 app.use(prismaErrorHandler);

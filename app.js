@@ -4,12 +4,12 @@ import cors from "cors";
 import createHttpError from "http-errors";
 import { prismaErrorHandler } from "./middlewares/prismaMiddleware.js";
 import root from "./routes/indexRoutes.js";
-import software from "./routes/softwaresRoutes.js";
-import language from "./routes/languagesRoutes.js";
-import provider from "./routes/providersRoutes.js";
+import softwares from "./routes/softwaresRoutes.js";
+import languages from "./routes/languagesRoutes.js";
+import providers from "./routes/providersRoutes.js";
 import applicationTypes from "./routes/applicationTypesRoutes.js";
 import departments from "./routes/departmentsRoutes.js";
-
+import businessCapabilties from './routes/businessCapabiltiesRoutes.js'
 // initialize app
 export const app = express();
 
@@ -28,11 +28,12 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 // TODO: Add routes here
 app.use("/", root);
-app.use("/softwares", software);
-app.use("/languages", language);
-app.use("/providers", provider);
+app.use("/softwares", softwares);
+app.use("/languages", languages);
+app.use("/providers", providers);
 app.use("/applicationtypes", applicationTypes);
 app.use("/departments", departments);
+app.use("/businesscapabilities", businessCapabilties);
 
 // Prisma error handler
 app.use(prismaErrorHandler);
@@ -46,6 +47,8 @@ app.use((req, res, next) => {
 
 // Error middleware
 app.use((err, req, res, next) => {
+    console.error(err.message);
+
   // Auth errors
   if (err.name === "UnauthorizedError") {
     return res

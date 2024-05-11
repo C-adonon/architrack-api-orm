@@ -10,6 +10,8 @@ import providers from "./routes/providersRoutes.js";
 import applicationTypes from "./routes/applicationTypesRoutes.js";
 import departments from "./routes/departmentsRoutes.js";
 import businessCapabilties from './routes/businessCapabiltiesRoutes.js'
+import applications from './routes/applicationsRoutes.js'
+
 // initialize app
 export const app = express();
 
@@ -26,7 +28,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-// TODO: Add routes here
 app.use("/", root);
 app.use("/softwares", softwares);
 app.use("/languages", languages);
@@ -34,6 +35,7 @@ app.use("/providers", providers);
 app.use("/applicationtypes", applicationTypes);
 app.use("/departments", departments);
 app.use("/businesscapabilities", businessCapabilties);
+app.use("/applications", applications)
 
 // Prisma error handler
 app.use(prismaErrorHandler);

@@ -21,6 +21,12 @@ export default class Application {
       where: {
         id: parseInt(id),
       },
+      include: {
+        provider: true,
+        businessCapability: true,
+        applicationType: true,
+        author: true,
+      },
     });
     return application;
   }

@@ -15,7 +15,11 @@ export default class Application {
       },
       include: {
         provider: true,
-        businessCapability: true,
+        businessCapability: {
+          include: {
+            department: true,
+          },
+        },
         applicationType: true,
         author: true,
       },

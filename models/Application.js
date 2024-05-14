@@ -1,6 +1,14 @@
-import { PrismaClient } from "@prisma/client";
+import {
+  PrismaClient,
+  State,
+  ContractType,
+  ValidationStatus,
+  Criticality,
+  HostingType,
+} from "@prisma/client";
 const prisma = new PrismaClient();
 import createHttpError from "http-errors";
+import { enumToArray } from "./../utils/enumToArray.js";
 
 export default class Application {
   async getAllApplications() {
@@ -144,5 +152,30 @@ export default class Application {
       },
     });
     return deletedApplication;
+  }
+
+  async getAllContractTypes() {
+    const contractTypes = enumToArray(ContractType);
+    return contractTypes;
+  }
+
+  async getAllStates() {
+    const states = enumToArray(State);
+    return states;
+  }
+
+  async getAllCriticalities() {
+    const criticalities = enumToArray(Criticality);
+    return criticalities;
+  }
+
+  async getAllHostingTypes() {
+    const hostingTypes = enumToArray(HostingType);
+    return hostingTypes;
+  }
+
+  async getAllValidationStatuses() {
+    const validationStatuses = enumToArray(ValidationStatus);
+    return validationStatuses;
   }
 }

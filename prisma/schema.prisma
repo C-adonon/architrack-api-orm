@@ -24,8 +24,8 @@ model User {
   updatedAt    DateTime      @updatedAt
   department   Department    @relation(fields: [departmentId], references: [id])
   departmentId Int
-  app          Accountable[]
-  application  Application[]
+  apps         Accountable[]
+  applications Application[]
 }
 
 enum Role {
@@ -40,8 +40,9 @@ model Department {
   name               String               @unique
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
-  user               User[]
   businessCapability BusinessCapability[]
+  users              User[]
+  applications       Application[]
 }
 
 model BusinessCapability {
@@ -51,18 +52,18 @@ model BusinessCapability {
   updatedAt    DateTime      @updatedAt
   department   Department    @relation(fields: [departmentId], references: [id])
   departmentId Int
-  application  Application[]
+  applications Application[]
 }
 
 model Accountable {
-  app       Application @relation(fields: [appId], references: [id])
+  app       Application @relation(fields: [appId], references: [id], onDelete: Cascade)
   appId     Int
-  pic       User?       @relation(fields: [picId], references: [id])
-  picId     Int?
+  user      User        @relation(fields: [userId], references: [id])
+  userId    Int
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 
-  @@id([appId])
+  @@id([appId, userId])
 }
 
 model Application {
@@ -79,15 +80,17 @@ model Application {
   updatedAt            DateTime            @updatedAt
   author               User                @relation(fields: [authorId], references: [id])
   authorId             Int
+  department           Department?         @relation(fields: [departmentId], references: [id])
+  departmentId         Int?
   businessCapability   BusinessCapability? @relation(fields: [businessCapabilityId], references: [id])
   businessCapabilityId Int?
   provider             Provider?           @relation(fields: [providerId], references: [id])
   providerId           Int?
   applicationType      ApplicationType     @relation(fields: [applicationTypeId], references: [id])
   applicationTypeId    Int
-  pic                  Accountable[]
-  language             Language[]
-  software             Software[]
+  accountables         Accountable[]
+  languages            Language[]
+  softwares            Software[]
 }
 
 enum ContractType {
@@ -131,40 +134,40 @@ enum HostingType {
 }
 
 model ApplicationType {
-  id          Int           @id @default(autoincrement())
-  name        String        @unique
-  description String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  application Application[]
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+  description  String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  applications Application[]
 }
 
 model Provider {
-  id          Int           @id @default(autoincrement())
-  name        String        @unique
-  location    String?
-  logo        String?
-  description String?
-  url         String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  application Application[]
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+  location     String?
+  logo         String?
+  description  String?
+  url          String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  applications Application[]
 }
 
 model Language {
-  id          Int           @id @default(autoincrement())
-  name        String        @unique
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  application Application[]
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  applications Application[]
 }
 
 model Software {
-  id          Int           @id @default(autoincrement())
-  name        String        @unique
-  description String?
-  version     String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  application Application[]
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+  description  String?
+  version      String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  applications Application[]
 }

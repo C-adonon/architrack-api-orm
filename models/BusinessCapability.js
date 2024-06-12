@@ -4,7 +4,11 @@ import createHttpError from "http-errors";
 
 export default class BusinessCapability {
   async getAllBusinessCapabilitys() {
-    const businessCapabilitys = await prisma.businessCapability.findMany();
+    const businessCapabilitys = await prisma.businessCapability.findMany({
+      include: {
+        department: true,
+      },
+    });
     return businessCapabilitys;
   }
 

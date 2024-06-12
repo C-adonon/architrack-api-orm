@@ -5,6 +5,11 @@ import {
   createApplication,
   updateApplication,
   deleteApplication,
+  getAllContractTypes,
+  getAllCriticalities,
+  getAllHostingTypes,
+  getAllValidationStatuses,
+  getAllStates,
 } from "../controllers/applicationController.js";
 import {
   createApplicationValidator,
@@ -23,5 +28,11 @@ router.put(
   updateApplication
 );
 router.delete("/:id([0-9]+)", deleteApplication);
+
+router.get("/contracttypes", getAllContractTypes);
+router.get("/states", getAllStates);
+router.get("/criticalities", getAllCriticalities);
+router.get("/hostingtypes", getAllHostingTypes);
+router.get("/validationstatuses", getAllValidationStatuses);
 
 export default router;

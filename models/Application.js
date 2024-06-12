@@ -1,10 +1,27 @@
-import { PrismaClient } from "@prisma/client";
+import {
+  PrismaClient,
+  State,
+  ContractType,
+  ValidationStatus,
+  Criticality,
+  HostingType,
+} from "@prisma/client";
 const prisma = new PrismaClient();
 import createHttpError from "http-errors";
+import { enumToArray } from "./../utils/enumToArray.js";
 
 export default class Application {
   async getAllApplications() {
-    const applications = await prisma.application.findMany();
+    const applications = await prisma.application.findMany({
+      include: {
+        applicationType: true,
+        department: {
+          include: {
+            businessCapability: true,
+          },
+        },
+      },
+    });
     return applications;
   }
 
@@ -12,6 +29,31 @@ export default class Application {
     const application = await prisma.application.findUnique({
       where: {
         id: parseInt(id),
+      },
+      include: {
+        provider: true,
+        department: {
+          include: {
+            businessCapability: true,
+          },
+        },
+        applicationType: true,
+        author: {
+          include: {
+            department: true,
+          },
+        },
+        languages: true,
+        softwares: true,
+        accountables: {
+          include: {
+            user: {
+              include: {
+                department: true,
+              },
+            },
+          },
+        },
       },
     });
     return application;
@@ -35,10 +77,34 @@ export default class Application {
         },
       };
     }
-    if (data.businessCapabilityId) {
-      connectOptions["businessCapability"] = {
+    if (data.departmentId) {
+      connectOptions["department"] = {
         connect: {
-          id: data.businessCapabilityId,
+          id: data.departmentId,
+        },
+      };
+    }
+    if (data.languages) {
+      connectOptions["languages"] = {
+        connect: data.languages.map((id) => {
+          return { id };
+        }),
+      };
+    }
+    if (data.softwares) {
+      connectOptions["softwares"] = {
+        connect: data.softwares.map((id) => {
+          return { id };
+        }),
+      };
+    }
+
+    if (data.accountables && data.accountables.length > 0) {
+      connectOptions["user"] = {
+        createMany: {
+          data: data.accountables.map((userId) => {
+            return { userId: userId };
+          }),
         },
       };
     }
@@ -69,14 +135,13 @@ export default class Application {
     return application;
   }
 
-  //   TODO: Implement Mailing when application is updated : send mail to accountables & architect
   async updateApplication(id, data) {
-    const applicationExists = await prisma.application.findUnique({
+    const foundApplication = await prisma.application.findUnique({
       where: {
         id: parseInt(id),
       },
     });
-    if (!applicationExists) throw createHttpError(404, "Application not found");
+    if (!foundApplication) throw createHttpError(404, "Application not found");
 
     let connectOptions = {};
     if (data.providerId) {
@@ -86,10 +151,10 @@ export default class Application {
         },
       };
     }
-    if (data.businessCapabilityId) {
-      connectOptions["businessCapability"] = {
+    if (data.departmentId) {
+      connectOptions["department"] = {
         connect: {
-          id: data.businessCapabilityId,
+          id: data.departmentId,
         },
       };
     }
@@ -99,6 +164,34 @@ export default class Application {
           id: data.applicationTypeId,
         },
       };
+    }
+    if (data.languages) {
+      console.log(data.languages);
+      connectOptions["languages"] = {
+        set: data.languages.map((id) => {
+          return { id };
+        }),
+      };
+      console.log(connectOptions);
+    }
+    if (data.softwares) {
+      connectOptions["softwares"] = {
+        set: data.softwares.map((id) => {
+          return { id };
+        }),
+      };
+    }
+    if (data.accountables && data.accountables.length > 0) {
+      console.log(data.accountables);
+      connectOptions["accountables"] = {
+        deleteMany: {},
+        createMany: {
+          data: data.accountables.map((userId) => {
+            return { userId: userId };
+          }),
+        },
+      };
+      console.log(connectOptions);
     }
 
     let updatedApplication = await prisma.application.update({
@@ -116,11 +209,18 @@ export default class Application {
         hostingType: data.hostingType,
         ...connectOptions,
       },
+      include: {
+        accountables: true,
+        provider: true,
+        department: true,
+        applicationType: true,
+        languages: true,
+        softwares: true,
+      },
     });
     return updatedApplication;
   }
 
-  //   TODO: Implement Mailing when application is deleted : send mail to accountables & architect
   async deleteApplication(id) {
     const applicationExists = await prisma.application.findUnique({
       where: {
@@ -134,5 +234,30 @@ export default class Application {
       },
     });
     return deletedApplication;
+  }
+
+  async getAllContractTypes() {
+    const contractTypes = enumToArray(ContractType);
+    return contractTypes;
+  }
+
+  async getAllStates() {
+    const states = enumToArray(State);
+    return states;
+  }
+
+  async getAllCriticalities() {
+    const criticalities = enumToArray(Criticality);
+    return criticalities;
+  }
+
+  async getAllHostingTypes() {
+    const hostingTypes = enumToArray(HostingType);
+    return hostingTypes;
+  }
+
+  async getAllValidationStatuses() {
+    const validationStatuses = enumToArray(ValidationStatus);
+    return validationStatuses;
   }
 }

@@ -9,19 +9,28 @@ import languages from "./routes/languagesRoutes.js";
 import providers from "./routes/providersRoutes.js";
 import applicationTypes from "./routes/applicationTypesRoutes.js";
 import departments from "./routes/departmentsRoutes.js";
-import businessCapabilties from './routes/businessCapabiltiesRoutes.js'
-import applications from './routes/applicationsRoutes.js'
+import businessCapabilties from "./routes/businessCapabiltiesRoutes.js";
+import applications from "./routes/applicationsRoutes.js";
+import users from "./routes/usersRoutes.js";
+import chartData from "./routes/chartDataRoutes.js"
 
 // initialize app
 export const app = express();
 
 // CORS
-app.use(
-  cors({
-    origin: ["*"],
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: ["*"],
+//     // credentials: true,
+//   })
+// );
+
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
 
 // for parsing application/json
 app.use(express.json());
@@ -35,7 +44,9 @@ app.use("/providers", providers);
 app.use("/applicationtypes", applicationTypes);
 app.use("/departments", departments);
 app.use("/businesscapabilities", businessCapabilties);
-app.use("/applications", applications)
+app.use("/applications", applications);
+app.use("/users", users);
+app.use("/chartdata", chartData);
 
 // Prisma error handler
 app.use(prismaErrorHandler);
@@ -49,7 +60,7 @@ app.use((req, res, next) => {
 
 // Error middleware
 app.use((err, req, res, next) => {
-    console.error(err.message);
+  console.error(err.message);
 
   // Auth errors
   if (err.name === "UnauthorizedError") {

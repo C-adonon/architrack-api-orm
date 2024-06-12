@@ -11,8 +11,11 @@ const createApplicationValidator = z.object({
   hostingType: z.optional(z.string()),
   authorId: z.number(),
   applicationTypeId: z.number(),
-  businessCapabilityId: z.optional(z.number()),
+  departmentId: z.optional(z.number()),
   providerId: z.optional(z.number()),
+  softwares: z.optional(z.nullable(z.array(z.number()))),
+  languages: z.optional(z.nullable(z.array(z.number()))),
+  accountables: z.optional(z.nullable(z.array(z.number()))),
 });
 
 const updatedApplicationValidator = z.object({
@@ -26,8 +29,11 @@ const updatedApplicationValidator = z.object({
   hostingType: z.optional(z.string()),
   authorId: z.optional(z.number()),
   applicationTypeId: z.optional(z.number()),
-  businessCapabilityId: z.optional(z.number()),
+  departmentId: z.optional(z.number()),
   providerId: z.optional(z.number()),
+  softwares: z.optional(z.nullable(z.array(z.number()))),
+  languages: z.optional(z.nullable(z.array(z.number()))),
+  accountables: z.optional(z.nullable(z.array(z.number()))),
 });
 
 export { createApplicationValidator, updatedApplicationValidator };

@@ -38,10 +38,12 @@ export const updateApplication = async (req, res, next) => {
   const id = parseInt(req.params.id);
   const data = req.body;
   try {
-    if (Object.keys(data).length === 0)
+    if (Object.keys(data).length === 0) {
       next(createHttpError(400, "Invalid data"));
-    const updatedApplication = await application.updateApplication(id, data);
-    res.status(200).json(updatedApplication);
+    } else {
+      const updatedApplication = await application.updateApplication(id, data);
+      res.status(200).json(updatedApplication);
+    }
   } catch (error) {
     next(error);
   }

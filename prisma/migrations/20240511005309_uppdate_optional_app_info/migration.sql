@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE `application` MODIFY `contractType` ENUM('FREEWARE', 'OPEN_SOURCE', 'COMMERCIAL', 'INTERNAL', 'EXTERNAL', 'UNKNOWN') NULL,
-    MODIFY `hostingType` ENUM('ON_PREMISE', 'CLOUD', 'HYBRID', 'UNKNOWN') NULL;

@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { PrismaClient } from "@prisma/client";
+import { application } from "express";
 
 const prisma = new PrismaClient();
 
@@ -49,7 +50,7 @@ async function createDepartments() {
 
 // Generate fake business capabilities
 async function createBusinessCaps() {
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 25; i++) {
     await prisma.businessCapability.create({
       data: {
         name: faker.company.buzzPhrase(),
@@ -110,7 +111,7 @@ async function createAppType() {
 
 // Generate fake providers
 async function createProviders() {
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 15; i++) {
     await prisma.provider.create({
       data: {
         name: faker.company.name(),
@@ -173,7 +174,8 @@ async function createLanguages() {
 
 // Generate fake applications
 async function createApps() {
-  for (let i = 0; i < 5; i++) {
+  let authorId = faker.number.int({ min: 1, max: 10 });
+  for (let i = 0; i < 25; i++) {
     await prisma.application.create({
       data: {
         name: faker.hacker.noun() + " " + faker.hacker.adjective(),
@@ -215,9 +217,9 @@ async function createApps() {
           "UNKNOWN",
         ]),
         author: {
-          connect: { id: faker.number.int({ min: 1, max: 10 }) },
+          connect: { id: authorId },
         },
-        businessCapability: {
+        department: {
           connect: { id: faker.number.int({ min: 1, max: 5 }) },
         },
         provider: {
@@ -225,6 +227,24 @@ async function createApps() {
         },
         applicationType: {
           connect: { id: faker.number.int({ min: 1, max: 5 }) },
+        },
+        languages: {
+          connect: { id: faker.number.int({ min: 1, max: 10 }) },
+        },
+        softwares: {
+          connect: { id: faker.number.int({ min: 1, max: 10 }) },
+        },
+        accountables: {
+          createMany: {
+            data: [
+              {
+                userId: authorId,
+              },
+              {
+                userId: faker.number.int({ min: 1, max: 10 }),
+              },
+            ],
+          },
         },
       },
     });
@@ -241,19 +261,44 @@ async function createAccountables() {
         picId: applications[i].authorId,
       },
     });
+    await prisma.accountable.create({
+      data: {
+        appId: applications[i].id,
+        picId: faker.number.int({ min: 1, max: 10 }),
+      },
+    });
   }
+}
+
+function associateLanguages() {
+  // Get all applications
+  const applications = prisma.application.findMany();
+  // Get all languages
+  const languages = prisma.language.findMany();
+  // For each application, associate it with a random language
+  applications.forEach(async (application) => {
+    const randomLanguage = faker.helpers.arrayElement(languages);
+    await prisma.application.update({
+      where: { id: application.id },
+      data: {
+        languages: {
+          connect: { id: randomLanguage.id },
+        },
+      },
+    });
+  });
 }
 
 // truncateTables();
 
 async function firstSeed() {
   try {
-    // await createDepartments();
-    // await createAppType();
-    // await createProviders();
-    // await createSoftwares();
-    // await createLanguages();
-    // await createBusinessCaps();
+    await createDepartments();
+    await createAppType();
+    await createProviders();
+    await createSoftwares();
+    await createLanguages();
+    await createBusinessCaps();
   } catch (error) {
     console.error("Error seeding database:", error);
   } finally {
@@ -263,9 +308,9 @@ async function firstSeed() {
 
 async function secondSeed() {
   try {
-    await createUsers();
+    // await createUsers();
     await createApps();
-    await createAccountables();
+    // await createAccountables();
   } catch (error) {
     console.error("Error seeding database:", error);
   } finally {

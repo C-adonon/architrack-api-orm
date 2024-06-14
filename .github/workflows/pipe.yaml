@@ -3,7 +3,7 @@ name: Deploy via SSH and Docker Compose
 on:
   push:
     branches:
-      - main # Set this to your deployment branch
+      - dev
 
 jobs:
   deploy:

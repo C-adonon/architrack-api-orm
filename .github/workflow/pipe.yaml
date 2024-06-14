@@ -1,0 +1,26 @@
+name: Deploy via SSH and Docker Compose
+
+on:
+  push:
+    branches:
+      - main # Set this to your deployment branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.PROD_PIPE_KEY }}
+
+      - name: SSH and Docker Compose Workflow
+        run: |
+          ssh -o "StrictHostKeyChecking=no" bitnami@13.37.25.8 << 'EOF'
+            cd ~/architrack-api-orm
+            git pull
+            docker compose up --build -d
+          EOF

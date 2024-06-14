@@ -15,7 +15,8 @@ jobs:
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: ${{ secrets.PROD_PIPE_KEY }}
+          ssh-private-key: ${{
+           secrets.PROD_PIPE_KEY }}
 
       - name: SSH and Docker Compose Workflow
         run: |

@@ -2,7 +2,14 @@
 import express from "express";
 import cors from "cors";
 import createHttpError from "http-errors";
+import cookieParser from "cookie-parser";
+import helmet from "helmet";
+import dotenv from "dotenv";
+dotenv.config();
+// import middleware
 import { prismaErrorHandler } from "./middlewares/prismaMiddleware.js";
+import { authenticateToken } from "./auth/jwtMiddleware.js";
+// import routes
 import root from "./routes/indexRoutes.js";
 import softwares from "./routes/softwaresRoutes.js";
 import languages from "./routes/languagesRoutes.js";
@@ -12,29 +19,39 @@ import departments from "./routes/departmentsRoutes.js";
 import businessCapabilties from "./routes/businessCapabiltiesRoutes.js";
 import applications from "./routes/applicationsRoutes.js";
 import users from "./routes/usersRoutes.js";
-import chartData from "./routes/chartDataRoutes.js"
+import chartData from "./routes/chartDataRoutes.js";
+import auth from "./routes/authRoutes.js";
 
 // initialize app
 export const app = express();
 
 // CORS
-// app.use(
-//   cors({
-//     origin: ["*"],
-//     // credentials: true,
-//   })
-// );
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
+//   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+//   next();
+// });
+
+app.use(helmet());
+
+app.use(cookieParser());
 
 // for parsing application/json
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// test route to check if JWT is working
+app.get("/protected", authenticateToken, (req, res) => {
+  res.json({ message: "Protected route" });
+});
 
 // Routes
 app.use("/", root);
@@ -47,6 +64,7 @@ app.use("/businesscapabilities", businessCapabilties);
 app.use("/applications", applications);
 app.use("/users", users);
 app.use("/chartdata", chartData);
+app.use("/auth", auth);
 
 // Prisma error handler
 app.use(prismaErrorHandler);
@@ -64,9 +82,15 @@ app.use((err, req, res, next) => {
 
   // Auth errors
   if (err.name === "UnauthorizedError") {
-    return res
-      .status(401)
-      .json({ error: "You do not have access to this page" });
+    // if (!err.message) {
+    //   return res
+    //     .status(401)
+    //     .json({ error: "You do not have access to this page" });
+    // } else {
+    //   return res.status(401).json({ error: err.message });
+    // }
+    if (err.message ? err.message : "You do not have access to this page")
+      return res.status(401).json({ error: err.message });
   } else if (
     err.name === "ErrorDocument"
     // err.name === "NotFoundError"

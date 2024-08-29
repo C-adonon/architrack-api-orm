@@ -11,17 +11,24 @@ import {
   updatedProviderValidator,
 } from "../validators/providerValidator.js";
 import { validateData } from "../middlewares/zodMiddleware.js";
+import { authenticateToken } from "../auth/jwtMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", getAllProviders);
-router.get("/:id([0-9]+)", getProviderById);
-router.post("/", validateData(createProviderValidator), createProvider);
+router.get("/", authenticateToken, getAllProviders);
+router.get("/:id([0-9]+)", authenticateToken, getProviderById);
+router.post(
+  "/",
+  authenticateToken,
+  validateData(createProviderValidator),
+  createProvider
+);
 router.put(
   "/:id([0-9]+)",
+  authenticateToken,
   validateData(updatedProviderValidator),
   updateProvider
 );
-router.delete("/:id([0-9]+)", deleteProvider);
+router.delete("/:id([0-9]+)", authenticateToken, deleteProvider);
 
 export default router;

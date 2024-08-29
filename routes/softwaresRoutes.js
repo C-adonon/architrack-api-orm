@@ -11,17 +11,24 @@ import {
   updatedSoftwareValidator,
 } from "../validators/softwareValidator.js";
 import { validateData } from "../middlewares/zodMiddleware.js";
+import { authenticateToken } from "../auth/jwtMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", getAllSoftwares);
-router.get("/:id([0-9]+)", getSoftwareById);
-router.post("/", validateData(createSoftwareValidator), createSoftware);
+router.get("/", authenticateToken, getAllSoftwares);
+router.get("/:id([0-9]+)", authenticateToken, getSoftwareById);
+router.post(
+  "/",
+  authenticateToken,
+  validateData(createSoftwareValidator),
+  createSoftware
+);
 router.put(
   "/:id([0-9]+)",
+  authenticateToken,
   validateData(updatedSoftwareValidator),
   updateSoftware
 );
-router.delete("/:id([0-9]+)", deleteSoftware);
+router.delete("/:id([0-9]+)", authenticateToken, deleteSoftware);
 
 export default router;

@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  getAllBusinessCapabilitys,
+  getAllBusinessCapabilities,
   getBusinessCapabilityById,
   createBusinessCapability,
   updateBusinessCapability,
@@ -11,17 +11,24 @@ import {
   updatedBusinessCapabilityValidator,
 } from "../validators/businessCapabilityValidator.js";
 import { validateData } from "../middlewares/zodMiddleware.js";
+import { authenticateToken } from "../auth/jwtMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", getAllBusinessCapabilitys);
-router.get("/:id([0-9]+)", getBusinessCapabilityById);
-router.post("/", validateData(createBusinessCapabilityValidator), createBusinessCapability);
+router.get("/", authenticateToken, getAllBusinessCapabilities);
+router.get("/:id([0-9]+)", authenticateToken, getBusinessCapabilityById);
+router.post(
+  "/",
+  authenticateToken,
+  validateData(createBusinessCapabilityValidator),
+  createBusinessCapability
+);
 router.put(
   "/:id([0-9]+)",
+  authenticateToken,
   validateData(updatedBusinessCapabilityValidator),
   updateBusinessCapability
 );
-router.delete("/:id([0-9]+)", deleteBusinessCapability);
+router.delete("/:id([0-9]+)", authenticateToken, deleteBusinessCapability);
 
 export default router;

@@ -1,0 +1,36 @@
+services:
+  db:
+    container_name: db
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DATABASE
+    volumes:
+      - db-data:/var/lib/mysql
+
+  adminer:
+    container_name: adminer
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  api:
+    container_name: api
+    build: .
+    environment:
+      DATABASE_URL: $DATABASE_URL
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    command: ["sh", "-c", "npx prisma migrate deploy && pnpm start"]
+
+volumes:
+  db-data:

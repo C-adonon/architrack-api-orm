@@ -24,15 +24,6 @@ export const getUserById = async (req, res, next) => {
   }
 };
 
-export const createUser = async (req, res, next) => {
-  try {
-    const data = req.body;
-    const newUser = await user.createUser(data);
-    res.status(201).json(newUser);
-  } catch (error) {
-    next(error);
-  }
-};
 
 export const updateUser = async (req, res, next) => {
   const id = parseInt(req.params.id);
@@ -42,7 +33,9 @@ export const updateUser = async (req, res, next) => {
       next(createHttpError(400, "Invalid data"));
     } else {
       const updatedUser = await user.updateUser(id, data);
-      res.status(200).json(updatedUser);
+      res
+        .status(200)
+        .json({ message: "User successfully updated", updatedUser });
     }
   } catch (error) {
     next(error);

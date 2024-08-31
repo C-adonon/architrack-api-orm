@@ -39,28 +39,29 @@ CREATE TABLE `BusinessCapability` (
 
 -- CreateTable
 CREATE TABLE `Accountable` (
-    `appId` VARCHAR(191) NOT NULL,
-    `picId` INTEGER NULL,
+    `appId` INTEGER NOT NULL,
+    `userId` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    PRIMARY KEY (`appId`)
+    PRIMARY KEY (`appId`, `userId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Application` (
-    `id` VARCHAR(191) NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NULL,
     `version` VARCHAR(191) NULL,
-    `contractType` ENUM('FREEWARE', 'OPEN_SOURCE', 'COMMERCIAL', 'INTERNAL', 'EXTERNAL', 'UNKNOWN') NOT NULL,
+    `contractType` ENUM('FREEWARE', 'OPEN_SOURCE', 'COMMERCIAL', 'INTERNAL', 'EXTERNAL', 'UNKNOWN') NULL,
     `state` ENUM('PROD', 'DEV', 'DEPRECATED', 'MAINTENANCE', 'UNKNOWN') NOT NULL,
     `criticality` ENUM('HIGH', 'MEDIUM', 'LOW', 'UNKNOWN') NOT NULL,
     `validationStatus` ENUM('DRAFT', 'VALIDATED', 'TO_BE_VALIDATED', 'REJECTED', 'ARCHIVED', 'UNKNOWN') NOT NULL,
-    `hostingType` ENUM('ON_PREMISE', 'CLOUD', 'HYBRID', 'UNKNOWN') NOT NULL,
+    `hostingType` ENUM('ON_PREMISE', 'CLOUD', 'HYBRID', 'UNKNOWN') NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `authorId` INTEGER NOT NULL,
+    `departmentId` INTEGER NULL,
     `businessCapabilityId` INTEGER NULL,
     `providerId` INTEGER NULL,
     `applicationTypeId` INTEGER NOT NULL,
@@ -122,7 +123,7 @@ CREATE TABLE `Software` (
 
 -- CreateTable
 CREATE TABLE `_ApplicationToLanguage` (
-    `A` VARCHAR(191) NOT NULL,
+    `A` INTEGER NOT NULL,
     `B` INTEGER NOT NULL,
 
     UNIQUE INDEX `_ApplicationToLanguage_AB_unique`(`A`, `B`),
@@ -131,7 +132,7 @@ CREATE TABLE `_ApplicationToLanguage` (
 
 -- CreateTable
 CREATE TABLE `_ApplicationToSoftware` (
-    `A` VARCHAR(191) NOT NULL,
+    `A` INTEGER NOT NULL,
     `B` INTEGER NOT NULL,
 
     UNIQUE INDEX `_ApplicationToSoftware_AB_unique`(`A`, `B`),
@@ -145,13 +146,16 @@ ALTER TABLE `User` ADD CONSTRAINT `User_departmentId_fkey` FOREIGN KEY (`departm
 ALTER TABLE `BusinessCapability` ADD CONSTRAINT `BusinessCapability_departmentId_fkey` FOREIGN KEY (`departmentId`) REFERENCES `Department`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Accountable` ADD CONSTRAINT `Accountable_appId_fkey` FOREIGN KEY (`appId`) REFERENCES `Application`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Accountable` ADD CONSTRAINT `Accountable_appId_fkey` FOREIGN KEY (`appId`) REFERENCES `Application`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Accountable` ADD CONSTRAINT `Accountable_picId_fkey` FOREIGN KEY (`picId`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Accountable` ADD CONSTRAINT `Accountable_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Application` ADD CONSTRAINT `Application_authorId_fkey` FOREIGN KEY (`authorId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Application` ADD CONSTRAINT `Application_departmentId_fkey` FOREIGN KEY (`departmentId`) REFERENCES `Department`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Application` ADD CONSTRAINT `Application_businessCapabilityId_fkey` FOREIGN KEY (`businessCapabilityId`) REFERENCES `BusinessCapability`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

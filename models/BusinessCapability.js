@@ -3,13 +3,13 @@ const prisma = new PrismaClient();
 import createHttpError from "http-errors";
 
 export default class BusinessCapability {
-  async getAllBusinessCapabilitys() {
-    const businessCapabilitys = await prisma.businessCapability.findMany({
+  async getAllBusinessCapabilities() {
+    const businessCapabilities = await prisma.businessCapability.findMany({
       include: {
         department: true,
       },
     });
-    return businessCapabilitys;
+    return businessCapabilities;
   }
 
   async getBusinessCapabilityById(id) {

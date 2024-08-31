@@ -3,6 +3,7 @@ const prisma = new PrismaClient();
 import createHttpError from "http-errors";
 import { enumToArray } from "./../utils/enumToArray.js";
 import { Role } from "@prisma/client";
+import * as argon2 from "argon2";
 
 export default class User {
   async getAllUsers() {
@@ -37,7 +38,33 @@ export default class User {
         department: true,
       },
     });
+    if (!user) throw createHttpError(404, "User not found");
     return user;
+  }
+
+  async getUserByEmail(credentials) {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: credentials.email,
+      },
+      select: {
+        id: true,
+        firstname: true,
+        lastname: true,
+        email: true,
+        password: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+        department: true,
+      },
+    });
+    
+    if (!user || !(await argon2.verify(user.password, credentials.password))) {
+      throw createHttpError(401, "invalid credentials");
+    } else{
+      return { id: user.id, email: user.email };
+    }
   }
 
   async createUser(data) {
@@ -47,13 +74,23 @@ export default class User {
       },
     });
     if (userExists) throw createHttpError(400, "User already exists");
+    let hashedPassword;
+    if (data.password) {
+      hashedPassword = await argon2.hash(data.password);
+    } else {
+      throw createHttpError(400, "Password is required");
+    }
+
+    if (!data.role) {
+      data.role = Role.STANDARD_USER;
+    }
 
     const user = await prisma.user.create({
       data: {
         firstname: data.firstname,
         lastname: data.lastname,
         email: data.email,
-        password: data.password,
+        password: hashedPassword,
         role: data.role,
         department: {
           connect: {

@@ -20,7 +20,7 @@ export const login = async (req, res, next) => {
     } else {
       let tokens = generateTokens(currentUser);
       sendTokens(res, tokens);
-      res.status(200).json({ message: "Login successful" });
+      res.status(200).json(currentUser);
     }
   } catch (error) {
     next(error);
@@ -48,10 +48,10 @@ export const refreshToken = async (req, res) => {
 
   try {
     let payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-    let currentUser = { id: payload.id, email: payload.email };
+    let currentUser = { uuid: payload.uuid, email: payload.email };
     const accessToken = generateAccessToken(currentUser);
     sendAccessToken(res, accessToken);
-    res.json({ message: "Token refreshed" });
+    res.status(200).json(currentUser);
   } catch (err) {
     res.status(403).json({ error: "Invalid token" });
   }
@@ -66,4 +66,3 @@ export const logout = async (req, res) => {
     next(error);
   }
 };
-

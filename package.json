@@ -8,6 +8,7 @@
     "dev": "nodemon server.js",
     "start": "node server.js",
     "faker": "nodemon database/seeder.js",
+    "uuid": "node database/generate-uuids.js",
     "test": "vitest --coverage"
   },
   "keywords": [],

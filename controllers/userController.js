@@ -24,18 +24,26 @@ export const getUserById = async (req, res, next) => {
   }
 };
 
+export const getUserByUuid = async (req, res, next) => {
+  const uuid = req.user.uuid || req.params.uuid;
+  try {
+    const userByUuid = await user.getUserByUuid(uuid);
+    if (!userByUuid) next(createHttpError(404, "User not found"));
+    else res.status(200).json(userByUuid);
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const updateUser = async (req, res, next) => {
-  const id = parseInt(req.params.id);
+  const uuid = req.user.uuid || req.params.uuid || req.params.id;
   const data = req.body;
   try {
     if (Object.keys(data).length === 0) {
       next(createHttpError(400, "Invalid data"));
     } else {
-      const updatedUser = await user.updateUser(id, data);
-      res
-        .status(200)
-        .json({ message: "User successfully updated", updatedUser });
+      const updatedUser = await user.updateUser(uuid, data);
+      res.status(200).json({ updatedUser });
     }
   } catch (error) {
     next(error);
@@ -43,9 +51,10 @@ export const updateUser = async (req, res, next) => {
 };
 
 export const deleteUser = async (req, res, next) => {
-  const id = parseInt(req.params.id);
+  // const id = parseInt(req.params.id);
+  const uuid = req.user.uuid;
   try {
-    const deletedUser = await user.deleteUser(id);
+    const deletedUser = await user.deleteUser(uuid);
     res.status(200).json(deletedUser);
   } catch (error) {
     next(error);

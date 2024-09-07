@@ -9,7 +9,7 @@ export default class User {
   async getAllUsers() {
     let users = await prisma.user.findMany({
       select: {
-        id: true,
+        uuid: true,
         firstname: true,
         lastname: true,
         email: true,
@@ -29,6 +29,26 @@ export default class User {
       },
       select: {
         id: true,
+        uuid: true,
+        firstname: true,
+        lastname: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+        department: true,
+      },
+    });
+    if (!user) throw createHttpError(404, "User not found");
+    return user;
+  }
+
+  async getUserByUuid(uuid) {
+    const user = await prisma.user.findUnique({
+      where: {
+        uuid: uuid,
+      },
+      select: {
         firstname: true,
         lastname: true,
         email: true,
@@ -48,7 +68,7 @@ export default class User {
         email: credentials.email,
       },
       select: {
-        id: true,
+        uuid: true,
         firstname: true,
         lastname: true,
         email: true,
@@ -59,11 +79,18 @@ export default class User {
         department: true,
       },
     });
-    
+
     if (!user || !(await argon2.verify(user.password, credentials.password))) {
       throw createHttpError(401, "invalid credentials");
-    } else{
-      return { id: user.id, email: user.email };
+    } else {
+      return {
+        uuid: user.uuid,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        email: user.email,
+        role: user.role,
+        department: user.department,
+      };
     }
   }
 
@@ -99,7 +126,7 @@ export default class User {
         },
       },
       select: {
-        id: true,
+        uuid: true,
         firstname: true,
         lastname: true,
         email: true,
@@ -112,10 +139,10 @@ export default class User {
     return user;
   }
 
-  async updateUser(id, data) {
+  async updateUser(uuid, data) {
     const userExists = await prisma.user.findUnique({
       where: {
-        id: parseInt(id),
+        uuid: uuid,
       },
     });
     if (!userExists) throw createHttpError(404, "User not found");
@@ -131,7 +158,7 @@ export default class User {
 
     let updatedUser = await prisma.user.update({
       where: {
-        id: parseInt(id),
+        uuid: uuid,
       },
       data: {
         firstname: data.firstname,
@@ -142,7 +169,7 @@ export default class User {
         ...connectOptions,
       },
       select: {
-        id: true,
+        uuid: true,
         firstname: true,
         lastname: true,
         email: true,
@@ -155,19 +182,20 @@ export default class User {
     return updatedUser;
   }
 
-  async deleteUser(id) {
+  async deleteUser(uuid) {
     const userExists = await prisma.user.findUnique({
       where: {
-        id: parseInt(id),
+        uuid: uuid,
       },
     });
     if (!userExists) throw createHttpError(404, "User not found");
     const deletedUser = await prisma.user.delete({
       where: {
-        id: parseInt(id),
+        uuid: uuid,
       },
       select: {
         id: true,
+        uuid: true,
         firstname: true,
         lastname: true,
         email: true,

@@ -1,5 +1,4 @@
 import express from "express";
-// import { createUser, getUserByEmail } from "../controllers/userController.js";
 import {
   login,
   register,

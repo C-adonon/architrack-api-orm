@@ -15,14 +15,14 @@ function authenticateToken(req, res, next) {
 
 function generateTokens(user) {
   const accessToken = jwt.sign(
-    { id: user.id, email: user.email },
+    { uuid: user.uuid, email: user.email },
     process.env.JWT_ACCESS_SECRET,
     {
       expiresIn: process.env.JWT_ACCESS_EXPIRES_IN,
     }
   );
   const refreshToken = jwt.sign(
-    { id: user.id, email: user.email },
+    { uuid: user.uuid, email: user.email },
     process.env.JWT_REFRESH_SECRET,
     {
       expiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
@@ -33,7 +33,7 @@ function generateTokens(user) {
 
 function generateAccessToken(user) {
   return jwt.sign(
-    { id: user.id, email: user.email },
+    { uuid: user.uuid, email: user.email },
     process.env.JWT_ACCESS_SECRET,
     {
       expiresIn: process.env.JWT_ACCESS_EXPIRES_IN,
@@ -60,6 +60,7 @@ function sendAccessToken(res, token) {
   res.cookie("accessToken", token, {
     httpOnly: true,
     secure: false,
+    sameSite: "Lax",
   });
 }
 

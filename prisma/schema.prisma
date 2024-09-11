@@ -72,6 +72,7 @@ model Application {
   name                 String              @unique
   description          String?
   version              String?
+  comment              String?
   contractType         ContractType?
   state                State
   criticality          Criticality

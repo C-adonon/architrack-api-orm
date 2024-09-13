@@ -24,7 +24,7 @@ RUN npx prisma generate
 # RUN npx prisma migrate deploy
 
 # Exposition du port utilisé par l'application
-EXPOSE 3000
+EXPOSE 8080
 
 # Commande pour démarrer l'application en dev
 CMD ["pnpm", "start"]

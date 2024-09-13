@@ -15,6 +15,7 @@ datasource db {
 
 model User {
   id           Int           @id @default(autoincrement())
+  uuid         String        @unique @default(uuid())
   email        String        @unique
   password     String
   firstname    String
@@ -22,10 +23,10 @@ model User {
   role         Role          @default(STANDARD_USER)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  departement  Department    @relation(fields: [departmentId], references: [id])
+  department   Department    @relation(fields: [departmentId], references: [id])
   departmentId Int
-  app          Accountable[]
-  Application  Application?
+  apps         Accountable[]
+  applications Application[]
 }
 
 enum Role {
@@ -36,61 +37,65 @@ enum Role {
 }
 
 model Department {
-  id                  Int                   @id @default(autoincrement())
-  name                String                @unique
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
-  User                User[]
-  Business_Capability Business_Capability[]
+  id                 Int                  @id @default(autoincrement())
+  name               String               @unique
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  businessCapability BusinessCapability[]
+  users              User[]
+  applications       Application[]
 }
 
-model Business_Capability {
+model BusinessCapability {
   id           Int           @id @default(autoincrement())
   name         String        @unique
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   department   Department    @relation(fields: [departmentId], references: [id])
   departmentId Int
-  Application  Application[]
+  applications Application[]
 }
 
 model Accountable {
-  app       Application @relation(fields: [appId], references: [id])
-  appId     String
-  pic       User        @relation(fields: [picId], references: [id])
-  picId     Int
+  app       Application @relation(fields: [appId], references: [id], onDelete: Cascade)
+  appId     Int
+  user      User        @relation(fields: [userId], references: [id])
+  userId    Int
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 
-  @@id([appId, picId])
+  @@id([appId, userId])
 }
 
 model Application {
-  id                   String              @id @default(uuid())
+  id                   Int                 @id @default(autoincrement())
   name                 String              @unique
   description          String?
   version              String?
-  contractType         Contract_type
+  comment              String?
+  contractType         ContractType?
   state                State
   criticality          Criticality
-  validationStatus     Validation_status
-  hostingType          Hosting_type
+  validationStatus     ValidationStatus
+  hostingType          HostingType?
   createdAt            DateTime            @default(now())
   updatedAt            DateTime            @updatedAt
   author               User                @relation(fields: [authorId], references: [id])
-  authorId             Int                 @unique
-  businessCapability   Business_Capability @relation(fields: [businessCapabilityId], references: [id])
-  businessCapabilityId Int
-  provider             Provider            @relation(fields: [providerId], references: [id])
-  providerId           Int
-  application_type     Application_type    @relation(fields: [applicationTypeId], references: [id])
+  authorId             Int
+  department           Department?         @relation(fields: [departmentId], references: [id])
+  departmentId         Int?
+  businessCapability   BusinessCapability? @relation(fields: [businessCapabilityId], references: [id])
+  businessCapabilityId Int?
+  provider             Provider?           @relation(fields: [providerId], references: [id])
+  providerId           Int?
+  applicationType      ApplicationType     @relation(fields: [applicationTypeId], references: [id])
   applicationTypeId    Int
-  pic                  Accountable[]
-  Language             Language[]
-  Software             Software[]
+  accountables         Accountable[]
+  languages            Language[]
+  softwares            Software[]
 }
 
-enum Contract_type {
+enum ContractType {
   FREEWARE
   OPEN_SOURCE
   COMMERCIAL
@@ -107,7 +112,7 @@ enum State {
   UNKNOWN
 }
 
-enum Validation_status {
+enum ValidationStatus {
   DRAFT
   VALIDATED
   TO_BE_VALIDATED
@@ -123,49 +128,48 @@ enum Criticality {
   UNKNOWN
 }
 
-enum Hosting_type {
+enum HostingType {
   ON_PREMISE
   CLOUD
   HYBRID
   UNKNOWN
 }
 
-model Application_type {
-  id          Int           @id @default(autoincrement())
-  name        String        @unique
-  description String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  Application Application[]
+model ApplicationType {
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+  description  String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  applications Application[]
 }
 
 model Provider {
-  id          Int           @id @default(autoincrement())
-  name        String        @unique
-  location    String?
-  logo        String?
-  description String?
-  url         String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  Application Application[]
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+  location     String?
+  logo         String?
+  description  String?
+  url          String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  applications Application[]
 }
 
 model Language {
-  id          Int           @id @default(autoincrement())
-  name        String        @unique
-  description String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  Application Application[]
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  applications Application[]
 }
 
 model Software {
-  id          Int           @id @default(autoincrement())
-  name        String        @unique
-  description String?
-  version     String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  Application Application[]
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+  description  String?
+  version      String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  applications Application[]
 }

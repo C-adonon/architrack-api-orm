@@ -5,6 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@faker-js/faker':
+    specifier: ^8.4.1
+    version: 8.4.1
+  '@prisma/client':
+    specifier: ^5.10.2
+    version: 5.10.2(prisma@5.10.2)
   argon2:
     specifier: ^0.40.3
     version: 0.40.3
@@ -14,6 +20,9 @@ dependencies:
   cors:
     specifier: ^2.8.5
     version: 2.8.5
+  dotenv:
+    specifier: ^16.3.2
+    version: 16.3.2
   express:
     specifier: ^4.18.2
     version: 4.18.2
@@ -29,29 +38,20 @@ dependencies:
   jsonwebtoken:
     specifier: ^9.0.2
     version: 9.0.2
+  prisma:
+    specifier: ^5.10.2
+    version: 5.10.2
   zod:
     specifier: ^3.22.4
     version: 3.22.4
 
 devDependencies:
-  '@faker-js/faker':
-    specifier: ^8.4.1
-    version: 8.4.1
-  '@prisma/client':
-    specifier: ^5.10.2
-    version: 5.10.2(prisma@5.10.2)
   '@vitest/coverage-v8':
     specifier: ^1.2.0
     version: 1.2.0(vitest@1.2.0)
-  dotenv:
-    specifier: ^16.3.2
-    version: 16.3.2
   nodemon:
     specifier: ^3.0.3
     version: 3.0.3
-  prisma:
-    specifier: ^5.10.2
-    version: 5.10.2
   supertest:
     specifier: ^6.3.4
     version: 6.3.4
@@ -310,7 +310,7 @@ packages:
   /@faker-js/faker@8.4.1:
     resolution: {integrity: sha512-XQ3cU+Q8Uqmrbf2e0cIC/QN43sTBSC8KF12u29Mb47tWrt2hAgBXSgpZMj4Ao8Uk0iJcU99QsOCaIL8934obCg==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0, npm: '>=6.14.13'}
-    dev: true
+    dev: false
 
   /@istanbuljs/schema@0.1.3:
     resolution: {integrity: sha512-ZXRY4jNvVgSVQ8DL3LTcakaAtXwTVUxE81hslsyD2AtoXW/wVob10HkOJ1X/pAlcI7D+2YoZKg5do8G/w6RYgA==}
@@ -370,15 +370,15 @@ packages:
         optional: true
     dependencies:
       prisma: 5.10.2
-    dev: true
+    dev: false
 
   /@prisma/debug@5.10.2:
     resolution: {integrity: sha512-bkBOmH9dpEBbMKFJj8V+Zp8IZHIBjy3fSyhLhxj4FmKGb/UBSt9doyfA6k1UeUREsMJft7xgPYBbHSOYBr8XCA==}
-    dev: true
+    dev: false
 
   /@prisma/engines-version@5.10.0-34.5a9203d0590c951969e85a7d07215503f4672eb9:
     resolution: {integrity: sha512-uCy/++3Jx/O3ufM+qv2H1L4tOemTNqcP/gyEVOlZqTpBvYJUe0tWtW0y3o2Ueq04mll4aM5X3f6ugQftOSLdFQ==}
-    dev: true
+    dev: false
 
   /@prisma/engines@5.10.2:
     resolution: {integrity: sha512-HkSJvix6PW8YqEEt3zHfCYYJY69CXsNdhU+wna+4Y7EZ+AwzeupMnUThmvaDA7uqswiHkgm5/SZ6/4CStjaGmw==}
@@ -388,7 +388,7 @@ packages:
       '@prisma/engines-version': 5.10.0-34.5a9203d0590c951969e85a7d07215503f4672eb9
       '@prisma/fetch-engine': 5.10.2
       '@prisma/get-platform': 5.10.2
-    dev: true
+    dev: false
 
   /@prisma/fetch-engine@5.10.2:
     resolution: {integrity: sha512-dSmXcqSt6DpTmMaLQ9K8ZKzVAMH3qwGCmYEZr/uVnzVhxRJ1EbT/w2MMwIdBNq1zT69Rvh0h75WMIi0mrIw7Hg==}
@@ -396,13 +396,13 @@ packages:
       '@prisma/debug': 5.10.2
       '@prisma/engines-version': 5.10.0-34.5a9203d0590c951969e85a7d07215503f4672eb9
       '@prisma/get-platform': 5.10.2
-    dev: true
+    dev: false
 
   /@prisma/get-platform@5.10.2:
     resolution: {integrity: sha512-nqXP6vHiY2PIsebBAuDeWiUYg8h8mfjBckHh6Jezuwej0QJNnjDiOq30uesmg+JXxGk99nqyG3B7wpcOODzXvg==}
     dependencies:
       '@prisma/debug': 5.10.2
-    dev: true
+    dev: false
 
   /@rollup/rollup-android-arm-eabi@4.9.5:
     resolution: {integrity: sha512-idWaG8xeSRCfRq9KpRysDHJ/rEHBEXcHuJ82XY0yYFIWnLMjZv9vF/7DOq8djQ2n3Lk6+3qfSH8AqlmHlmi1MA==}
@@ -885,7 +885,7 @@ packages:
   /dotenv@16.3.2:
     resolution: {integrity: sha512-HTlk5nmhkm8F6JcdXvHIzaorzCoziNQT9mGxLPVXW8wJF1TiGSL60ZGB4gHWabHOaMmWmhvk2/lPHfnBiT78AQ==}
     engines: {node: '>=12'}
-    dev: true
+    dev: false
 
   /ecdsa-sig-formatter@1.0.11:
     resolution: {integrity: sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==}
@@ -1608,7 +1608,7 @@ packages:
     requiresBuild: true
     dependencies:
       '@prisma/engines': 5.10.2
-    dev: true
+    dev: false
 
   /proxy-addr@2.0.7:
     resolution: {integrity: sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==}

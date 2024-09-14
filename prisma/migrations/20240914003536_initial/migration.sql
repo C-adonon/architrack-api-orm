@@ -1,6 +1,7 @@
 -- CreateTable
-CREATE TABLE `User` (
+CREATE TABLE `user` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `uuid` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
     `firstname` VARCHAR(191) NOT NULL,
@@ -10,35 +11,36 @@ CREATE TABLE `User` (
     `updatedAt` DATETIME(3) NOT NULL,
     `departmentId` INTEGER NOT NULL,
 
-    UNIQUE INDEX `User_email_key`(`email`),
+    UNIQUE INDEX `user_uuid_key`(`uuid`),
+    UNIQUE INDEX `user_email_key`(`email`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Department` (
+CREATE TABLE `department` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `Department_name_key`(`name`),
+    UNIQUE INDEX `department_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `BusinessCapability` (
+CREATE TABLE `businesscapability` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `departmentId` INTEGER NOT NULL,
 
-    UNIQUE INDEX `BusinessCapability_name_key`(`name`),
+    UNIQUE INDEX `businesscapability_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Accountable` (
+CREATE TABLE `accountable` (
     `appId` INTEGER NOT NULL,
     `userId` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -48,11 +50,12 @@ CREATE TABLE `Accountable` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Application` (
+CREATE TABLE `application` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NULL,
     `version` VARCHAR(191) NULL,
+    `comment` VARCHAR(191) NULL,
     `contractType` ENUM('FREEWARE', 'OPEN_SOURCE', 'COMMERCIAL', 'INTERNAL', 'EXTERNAL', 'UNKNOWN') NULL,
     `state` ENUM('PROD', 'DEV', 'DEPRECATED', 'MAINTENANCE', 'UNKNOWN') NOT NULL,
     `criticality` ENUM('HIGH', 'MEDIUM', 'LOW', 'UNKNOWN') NOT NULL,
@@ -66,24 +69,24 @@ CREATE TABLE `Application` (
     `providerId` INTEGER NULL,
     `applicationTypeId` INTEGER NOT NULL,
 
-    UNIQUE INDEX `Application_name_key`(`name`),
+    UNIQUE INDEX `application_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `ApplicationType` (
+CREATE TABLE `applicationtype` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `ApplicationType_name_key`(`name`),
+    UNIQUE INDEX `applicationtype_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Provider` (
+CREATE TABLE `provider` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `location` VARCHAR(191) NULL,
@@ -93,23 +96,23 @@ CREATE TABLE `Provider` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `Provider_name_key`(`name`),
+    UNIQUE INDEX `provider_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Language` (
+CREATE TABLE `language` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `Language_name_key`(`name`),
+    UNIQUE INDEX `language_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Software` (
+CREATE TABLE `software` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NULL,
@@ -117,7 +120,7 @@ CREATE TABLE `Software` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `Software_name_key`(`name`),
+    UNIQUE INDEX `software_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -140,40 +143,40 @@ CREATE TABLE `_ApplicationToSoftware` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `User` ADD CONSTRAINT `User_departmentId_fkey` FOREIGN KEY (`departmentId`) REFERENCES `Department`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `user` ADD CONSTRAINT `user_departmentId_fkey` FOREIGN KEY (`departmentId`) REFERENCES `department`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `BusinessCapability` ADD CONSTRAINT `BusinessCapability_departmentId_fkey` FOREIGN KEY (`departmentId`) REFERENCES `Department`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `businesscapability` ADD CONSTRAINT `businesscapability_departmentId_fkey` FOREIGN KEY (`departmentId`) REFERENCES `department`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Accountable` ADD CONSTRAINT `Accountable_appId_fkey` FOREIGN KEY (`appId`) REFERENCES `Application`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `accountable` ADD CONSTRAINT `accountable_appId_fkey` FOREIGN KEY (`appId`) REFERENCES `application`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Accountable` ADD CONSTRAINT `Accountable_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `accountable` ADD CONSTRAINT `accountable_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Application` ADD CONSTRAINT `Application_authorId_fkey` FOREIGN KEY (`authorId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `application` ADD CONSTRAINT `application_authorId_fkey` FOREIGN KEY (`authorId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Application` ADD CONSTRAINT `Application_departmentId_fkey` FOREIGN KEY (`departmentId`) REFERENCES `Department`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `application` ADD CONSTRAINT `application_departmentId_fkey` FOREIGN KEY (`departmentId`) REFERENCES `department`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Application` ADD CONSTRAINT `Application_businessCapabilityId_fkey` FOREIGN KEY (`businessCapabilityId`) REFERENCES `BusinessCapability`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `application` ADD CONSTRAINT `application_businessCapabilityId_fkey` FOREIGN KEY (`businessCapabilityId`) REFERENCES `businesscapability`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Application` ADD CONSTRAINT `Application_providerId_fkey` FOREIGN KEY (`providerId`) REFERENCES `Provider`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `application` ADD CONSTRAINT `application_providerId_fkey` FOREIGN KEY (`providerId`) REFERENCES `provider`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Application` ADD CONSTRAINT `Application_applicationTypeId_fkey` FOREIGN KEY (`applicationTypeId`) REFERENCES `ApplicationType`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `application` ADD CONSTRAINT `application_applicationTypeId_fkey` FOREIGN KEY (`applicationTypeId`) REFERENCES `applicationtype`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `_ApplicationToLanguage` ADD CONSTRAINT `_ApplicationToLanguage_A_fkey` FOREIGN KEY (`A`) REFERENCES `Application`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `_ApplicationToLanguage` ADD CONSTRAINT `_ApplicationToLanguage_A_fkey` FOREIGN KEY (`A`) REFERENCES `application`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `_ApplicationToLanguage` ADD CONSTRAINT `_ApplicationToLanguage_B_fkey` FOREIGN KEY (`B`) REFERENCES `Language`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `_ApplicationToLanguage` ADD CONSTRAINT `_ApplicationToLanguage_B_fkey` FOREIGN KEY (`B`) REFERENCES `language`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `_ApplicationToSoftware` ADD CONSTRAINT `_ApplicationToSoftware_A_fkey` FOREIGN KEY (`A`) REFERENCES `Application`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `_ApplicationToSoftware` ADD CONSTRAINT `_ApplicationToSoftware_A_fkey` FOREIGN KEY (`A`) REFERENCES `application`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `_ApplicationToSoftware` ADD CONSTRAINT `_ApplicationToSoftware_B_fkey` FOREIGN KEY (`B`) REFERENCES `Software`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `_ApplicationToSoftware` ADD CONSTRAINT `_ApplicationToSoftware_B_fkey` FOREIGN KEY (`B`) REFERENCES `software`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

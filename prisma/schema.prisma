@@ -27,6 +27,8 @@ model User {
   departmentId Int
   apps         Accountable[]
   applications Application[]
+
+  @@map("user")
 }
 
 enum Role {
@@ -44,6 +46,8 @@ model Department {
   businessCapability BusinessCapability[]
   users              User[]
   applications       Application[]
+
+  @@map("department")
 }
 
 model BusinessCapability {
@@ -54,6 +58,8 @@ model BusinessCapability {
   department   Department    @relation(fields: [departmentId], references: [id])
   departmentId Int
   applications Application[]
+
+  @@map("businesscapability")
 }
 
 model Accountable {
@@ -65,6 +71,7 @@ model Accountable {
   updatedAt DateTime    @updatedAt
 
   @@id([appId, userId])
+  @@map("accountable")
 }
 
 model Application {
@@ -93,6 +100,8 @@ model Application {
   accountables         Accountable[]
   languages            Language[]
   softwares            Software[]
+
+  @@map("application")
 }
 
 enum ContractType {
@@ -142,6 +151,8 @@ model ApplicationType {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   applications Application[]
+
+  @@map("applicationtype")
 }
 
 model Provider {
@@ -154,6 +165,8 @@ model Provider {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   applications Application[]
+
+  @@map("provider")
 }
 
 model Language {
@@ -162,6 +175,8 @@ model Language {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   applications Application[]
+
+  @@map("language")
 }
 
 model Software {
@@ -172,4 +187,6 @@ model Software {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   applications Application[]
+
+  @@map("software")
 }

@@ -67,8 +67,8 @@ function sendTokens(res, tokens) {
 function sendAccessToken(res, token) {
   res.cookie("accessToken", token, {
     httpOnly: true,
-    secure: false,
-    sameSite: "Lax",
+    secure: true,
+    sameSite: "Strict",
   });
 }
 

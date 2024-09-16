@@ -19,6 +19,7 @@ export const login = async (req, res, next) => {
       next(createHttpError(404, "User not found"));
     } else {
       let tokens = generateTokens(currentUser);
+      console.log(tokens);
       sendTokens(res, tokens);
       res.status(200).json(currentUser);
     }

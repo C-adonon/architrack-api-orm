@@ -28,7 +28,7 @@ export const app = express();
 // CORS
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:5173", "*"],
+    origin: "*",
     credentials: true,
   })
 );

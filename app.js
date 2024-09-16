@@ -38,6 +38,7 @@ app.use(
       "https://architrack-api-7inqv.ondigitalocean.app/",
     ],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"],
   })
 );
 

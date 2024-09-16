@@ -51,16 +51,28 @@ function generateAccessToken(user) {
 
 // TODO FLAGS EN PRODUCTION : {  httpOnly: true,  secure: true,  sameSite: 'Strict' }
 // TODO FLAGS EN DEV : {  httpOnly: true,  secure: false,  sameSite: 'None/Lax' }
+// function sendTokens(res, tokens) {
+//   res.cookie("accessToken", tokens.accessToken, {
+//     httpOnly: true,
+//     secure: process.env.NODE_ENV === "PROD" ? true : false,
+//     sameSite: process.env.NODE_ENV === "PROD" ? "Strict" : "Lax",
+//   });
+//   res.cookie("refreshToken", tokens.refreshToken, {
+//     httpOnly: true,
+//     secure: process.env.NODE_ENV === "PROD" ? true : false,
+//     sameSite: process.env.NODE_ENV === "PROD" ? "Strict" : "Lax",
+//   });
+// }
 function sendTokens(res, tokens) {
   res.cookie("accessToken", tokens.accessToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "PROD" ? true : false,
-    sameSite: process.env.NODE_ENV === "PROD" ? "Strict" : "Lax",
+    secure: true,
+    sameSite: "Strict",
   });
   res.cookie("refreshToken", tokens.refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "PROD" ? true : false,
-    sameSite: process.env.NODE_ENV === "PROD" ? "Strict" : "Lax",
+    secure: true,
+    sameSite: "Strict",
   });
 }
 

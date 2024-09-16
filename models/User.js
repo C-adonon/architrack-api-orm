@@ -9,6 +9,7 @@ export default class User {
   async getAllUsers() {
     let users = await prisma.user.findMany({
       select: {
+        id: true,
         uuid: true,
         firstname: true,
         lastname: true,

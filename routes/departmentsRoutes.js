@@ -12,7 +12,7 @@ import { authenticateToken } from "../auth/jwtMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", authenticateToken, getAllDepartments);
+router.get("/", getAllDepartments);
 router.get("/:id([0-9]+)", authenticateToken, getDepartmentById);
 router.post(
   "/",

@@ -13,6 +13,14 @@ function authenticateToken(req, res, next) {
   });
 }
 
+function getAuthorIdFromToken(req) {
+  const token = req.cookies.accessToken;
+  if (!token) return null;
+
+  const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+  return payload.uuid;
+}
+
 function generateTokens(user) {
   const accessToken = jwt.sign(
     { uuid: user.uuid, email: user.email },
@@ -70,4 +78,5 @@ export {
   authenticateToken,
   generateAccessToken,
   sendAccessToken,
+  getAuthorIdFromToken,
 };

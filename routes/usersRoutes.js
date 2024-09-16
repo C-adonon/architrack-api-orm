@@ -33,6 +33,6 @@ router.put(
   updateUser
 );
 router.delete("/:uuid" + uuidRegex, authenticateToken, deleteUser);
-router.get("/roles", authenticateToken, getAllRoles);
+router.get("/roles", getAllRoles);
 
 export default router;

@@ -15,6 +15,7 @@ export default class Application {
     const applications = await prisma.application.findMany({
       include: {
         applicationType: true,
+        author: true,
         department: {
           include: {
             businessCapability: true,
@@ -60,7 +61,7 @@ export default class Application {
   }
 
   //   TODO: Change authorId to the logged in user
-  async createApplication(data) {
+  async createApplication(data, authorId) {
     const applicationExists = await prisma.application.findFirst({
       where: {
         name: data.name,
@@ -81,6 +82,13 @@ export default class Application {
       connectOptions["department"] = {
         connect: {
           id: data.departmentId,
+        },
+      };
+    }
+    if (data.businessCapabilityId) {
+      connectOptions["businessCapability"] = {
+        connect: {
+          id: data.businessCapabilityId,
         },
       };
     }
@@ -117,11 +125,11 @@ export default class Application {
         contractType: data.contractType,
         state: data.state,
         criticality: data.criticality,
-        validationStatus: data.validationStatus,
+        validationStatus: "DRAFT",
         hostingType: data.hostingType,
         author: {
           connect: {
-            id: data.authorId,
+            uuid: authorId,
           },
         },
         applicationType: {

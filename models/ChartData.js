@@ -11,7 +11,7 @@ function formatData(data, key, table) {
     } else if (table && Array.isArray(table)) {
       return {
         id: item[key],
-        label: table.find((t) => t.id === item[key]).name,
+        label: table.find((t) => t.id === item[key]),
         value: item._count[key],
       };
     }

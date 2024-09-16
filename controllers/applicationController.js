@@ -1,5 +1,6 @@
 import createHttpError from "http-errors";
 import Application from "../models/Application.js";
+import { getAuthorIdFromToken } from "../auth/jwtMiddleware.js";
 
 const application = new Application();
 
@@ -26,8 +27,9 @@ export const getApplicationById = async (req, res, next) => {
 
 export const createApplication = async (req, res, next) => {
   try {
+    const authorId = getAuthorIdFromToken(req);
     const data = req.body;
-    const newApplication = await application.createApplication(data);
+    const newApplication = await application.createApplication(data, authorId);
     res.status(201).json(newApplication);
   } catch (error) {
     next(error);

@@ -8,7 +8,7 @@ import dotenv from "dotenv";
 dotenv.config();
 // import middleware
 import { prismaErrorHandler } from "./middlewares/prismaMiddleware.js";
-import { authenticateToken } from "./auth/jwtMiddleware.js";
+
 // import routes
 import root from "./routes/indexRoutes.js";
 import softwares from "./routes/softwaresRoutes.js";
@@ -28,17 +28,10 @@ export const app = express();
 // CORS
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:3000", "http://localhost:5173", "*"],
     credentials: true,
   })
 );
-
-// app.use((req, res, next) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
-//   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-//   next();
-// });
 
 app.use(helmet());
 
@@ -47,11 +40,6 @@ app.use(cookieParser());
 // for parsing application/json
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// test route to check if JWT is working
-app.get("/protected", authenticateToken, (req, res) => {
-  res.json({ message: "Protected route" });
-});
 
 // Routes
 app.use("/", root);

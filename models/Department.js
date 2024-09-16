@@ -4,7 +4,18 @@ import createHttpError from "http-errors";
 
 export default class Department {
   async getAllDepartments() {
-    const departments = await prisma.department.findMany();
+    const departments = await prisma.department.findMany({
+      select: {
+        id: true,
+        name: true,
+        businessCapability: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
     return departments;
   }
 
@@ -12,6 +23,15 @@ export default class Department {
     const department = await prisma.department.findUnique({
       where: {
         id: parseInt(id),
+      },select: {
+        id: true,
+        name: true,
+        businessCapability: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
     return department;
@@ -23,7 +43,8 @@ export default class Department {
         name: data.name,
       },
     });
-    if (departmentExists) throw createHttpError(400, "Department already exists");
+    if (departmentExists)
+      throw createHttpError(400, "Department already exists");
     const department = await prisma.department.create({
       data: {
         name: data.name,

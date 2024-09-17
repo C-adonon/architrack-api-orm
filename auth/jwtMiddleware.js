@@ -67,12 +67,12 @@ function sendTokens(res, tokens) {
   res.cookie("accessToken", tokens.accessToken, {
     httpOnly: true,
     secure: true,
-    sameSite: "Strict",
+    sameSite: "Lax",
   });
   res.cookie("refreshToken", tokens.refreshToken, {
     httpOnly: true,
     secure: true,
-    sameSite: "Strict",
+    sameSite: "Lax",
   });
 }
 

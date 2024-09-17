@@ -29,13 +29,14 @@ export const app = express();
 app.use(
   cors({
     origin: [
-      "http://localhost:3000",
-      "http://localhost:3000/",
-      "http://localhost:5173",
-      "http://localhost:5173/",
-      "http://localhost:8080",
-      "http://localhost:8080/",
       "https://architrack-api-7inqv.ondigitalocean.app/",
+      "https://architrack-api-7inqv.ondigitalocean.app",
+      "http://localhost:3000/",
+      "http://localhost:3000",
+      "http://localhost:8080/",
+      "http://localhost:8080",
+      "http://localhost:5173/",
+      "http://localhost:5173",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"],

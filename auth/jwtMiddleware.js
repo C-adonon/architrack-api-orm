@@ -66,12 +66,12 @@ function generateAccessToken(user) {
 function sendTokens(res, tokens) {
   res.cookie("accessToken", tokens.accessToken, {
     httpOnly: true,
-    secure: true,
+    secure: false,
     sameSite: "Lax",
   });
   res.cookie("refreshToken", tokens.refreshToken, {
     httpOnly: true,
-    secure: true,
+    secure: false,
     sameSite: "Lax",
   });
 }

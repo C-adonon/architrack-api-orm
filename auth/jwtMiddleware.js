@@ -65,14 +65,14 @@ function generateAccessToken(user) {
 // }
 function sendTokens(res, tokens) {
   res.cookie("accessToken", tokens.accessToken, {
-    httpOnly: true,
+    httpOnly: false,
     secure: false,
-    sameSite: "Lax",
+    sameSite: "None",
   });
   res.cookie("refreshToken", tokens.refreshToken, {
-    httpOnly: true,
+    httpOnly: false,
     secure: false,
-    sameSite: "Lax",
+    sameSite: "None",
   });
 }
 

@@ -27,6 +27,7 @@
     "http-errors": "^2.0.0",
     "jsonwebtoken": "^9.0.2",
     "prisma": "^5.10.2",
+    "serverless-http": "^3.2.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {

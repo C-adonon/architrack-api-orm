@@ -1,7 +1,8 @@
 import { app } from "./app.js";
 
 // server port
-const port = 3000;
+// const port = 3000;
+const port = 8080;
 
 // run the server
 app.listen(port, () => {

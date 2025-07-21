@@ -29,8 +29,8 @@ export const app = express();
 app.use(
   cors({
     origin: [
-      "https://architrack-api-7inqv.ondigitalocean.app/",
-      "https://architrack-api-7inqv.ondigitalocean.app",
+      "https://architrack.cadonon.com/",
+      "https://architrack.cadonon.com",
       "http://localhost:3000/",
       "http://localhost:3000",
       "http://localhost:8080/",

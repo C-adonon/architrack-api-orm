@@ -51,36 +51,36 @@ function generateAccessToken(user) {
 
 // TODO FLAGS EN PRODUCTION : {  httpOnly: true,  secure: true,  sameSite: 'Strict' }
 // TODO FLAGS EN DEV : {  httpOnly: true,  secure: false,  sameSite: 'None/Lax' }
-// function sendTokens(res, tokens) {
-//   res.cookie("accessToken", tokens.accessToken, {
-//     httpOnly: true,
-//     secure: process.env.NODE_ENV === "PROD" ? true : false,
-//     sameSite: process.env.NODE_ENV === "PROD" ? "Strict" : "Lax",
-//   });
-//   res.cookie("refreshToken", tokens.refreshToken, {
-//     httpOnly: true,
-//     secure: process.env.NODE_ENV === "PROD" ? true : false,
-//     sameSite: process.env.NODE_ENV === "PROD" ? "Strict" : "Lax",
-//   });
-// }
 function sendTokens(res, tokens) {
   res.cookie("accessToken", tokens.accessToken, {
-    httpOnly: false,
-    secure: false,
-    sameSite: "None",
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "PROD" ? true : false,
+    sameSite: process.env.NODE_ENV === "PROD" ? "None" : "Lax",
   });
   res.cookie("refreshToken", tokens.refreshToken, {
-    httpOnly: false,
-    secure: false,
-    sameSite: "None",
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "PROD" ? true : false,
+    sameSite: process.env.NODE_ENV === "PROD" ? "None" : "Lax",
   });
 }
+// function sendTokens(res, tokens) {
+//   res.cookie("accessToken", tokens.accessToken, {
+//     httpOnly: false,
+//     secure: false,
+//     sameSite: "None",
+//   });
+//   res.cookie("refreshToken", tokens.refreshToken, {
+//     httpOnly: false,
+//     secure: false,
+//     sameSite: "None",
+//   });
+// }
 
 function sendAccessToken(res, token) {
   res.cookie("accessToken", token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "Strict",
+    httpOnly: false,
+    secure: false,
+    sameSite: "Lax",
   });
 }
 

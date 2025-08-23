@@ -1,12 +1,14 @@
 import {
-  PrismaClient,
   State,
   ContractType,
   ValidationStatus,
   Criticality,
   HostingType,
 } from "@prisma/client";
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
+
+import { prisma } from "./../utils/prisma-import.js";
+
 import createHttpError from "http-errors";
 import { enumToArray } from "./../utils/enumToArray.js";
 

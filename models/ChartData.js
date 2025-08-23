@@ -1,5 +1,7 @@
-import { PrismaClient } from "@prisma/client";
-let prisma = new PrismaClient();
+// import { PrismaClient } from "@prisma/client";
+// let prisma = new PrismaClient();
+
+import { prisma } from "./../utils/prisma-import.js";
 
 function formatData(data, key, table) {
   return data.map((item) => {

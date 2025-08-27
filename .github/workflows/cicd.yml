@@ -59,6 +59,7 @@ jobs:
 
       - name: Check if database is actually seeded
         run: |
+          sleep 30
           mysql -h 127.0.0.1 -u root -proot test_db -e "SELECT * FROM users;"
           echo "Database successfully seeded."
 

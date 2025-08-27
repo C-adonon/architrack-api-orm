@@ -1,0 +1,115 @@
+name: cicd
+
+on:
+  push:
+    branches: [main, deploy-test]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_db
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "pnpm"
+          cache-dependency-path: "**/pnpm-lock.yaml"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Create test environment file
+        run: |
+          echo "DATABASE_URL=mysql://root:root@localhost:3306/test_db" > .env.test
+          echo "NODE_ENV=test" >> .env.test
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+        env:
+          DATABASE_URL: mysql://root:root@localhost:3306/test_db
+
+      - name: Run database migrations
+        run: npx prisma migrate deploy --schema=./prisma/schema.prisma
+        env:
+          DATABASE_URL: mysql://root:root@localhost:3306/test_db
+
+      - name: Seed the database with SQL dump
+        run: |
+          sleep 10
+          mysql -h 127.0.0.1 -u root -proot test_db < ./database/seed.sql
+
+      - name: Check if database is actually seeded
+        run: |
+          mysql -h 127.0.0.1 -u root -proot test_db -e "SELECT * FROM users;"
+          echo "Database successfully seeded."
+
+      - name: Run tests
+        run: pnpm test
+        env:
+          DATABASE_URL: mysql://root:root@localhost:3306/test_db
+          NODE_ENV: test
+
+      - name: Check if coverage is above 80%
+        run: |
+          COVERAGE=$(pnpm exec jest --coverage --coverageReporters=text | grep "All files" | awk '{print $4}' | sed 's/%//')
+          echo "Coverage is $COVERAGE%"
+          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
+            echo "Code coverage is below 80%. Failing the build."
+            exit 1
+          else
+            echo "Code coverage is above 80%."
+          fi
+
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/deploy-test'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "pnpm"
+          cache-dependency-path: "**/pnpm-lock.yaml"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build application
+        run: pnpm run build
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          vercel-args: "--prod"
+          vercel-org-id: ${{ secrets.ORG_ID}}
+          vercel-project-id: ${{ secrets.PROJECT_ID}}

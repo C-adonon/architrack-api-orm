@@ -48,14 +48,19 @@ jobs:
           DATABASE_URL: mysql://root:root@localhost:3306/test_db
 
       - name: Run database migrations
-        run: npx prisma migrate deploy --schema=./prisma/schema.prisma
+        run: |
+          sleep 30
+          npx prisma migrate deploy --schema=./prisma/schema.prisma
         env:
           DATABASE_URL: mysql://root:root@localhost:3306/test_db
 
-      - name: Seed the database with SQL dump
+      - name: Shows all tables from database
         run: |
-          sleep 10
-          mysql -h 127.0.0.1 -u root -proot test_db < ./database/seed.sql
+          sleep 5
+          mysql -h 127.0.0.1 -u root -proot test_db -e "SHOW TABLES;"
+
+      - name: Seed the database with SQL dump
+        run: mysql -h 127.0.0.1 -u root -proot test_db < ./database/seed.sql
 
       - name: Check if database is actually seeded
         run: |

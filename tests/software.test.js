@@ -1,6 +1,4 @@
 import { it, describe, expect, expectTypeOf } from "vitest";
-import request from "supertest";
-import { app } from "../app.js";
 import { createAuthenticatedAgent } from "./authHelper.js";
 
 let inc = 15;

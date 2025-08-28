@@ -1,8 +1,5 @@
 import { it, describe, expect, expectTypeOf } from "vitest";
-import request from "supertest";
-import { app } from "../app.js";
-
-// TODO: add token when auth is implemented
+import { createAuthenticatedAgent } from "./authHelper.js";
 
 let inc = 10;
 console.log("inc: " + inc);
@@ -13,7 +10,8 @@ console.log("inc: " + inc);
 
 describe("GET /providers", () => {
   it("returns all providers", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/providers")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(200);
@@ -26,19 +24,22 @@ describe("GET /providers", () => {
 
 describe("GET /providers/:id", () => {
   it("returns the corresponding provider based on its ID", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/providers/2")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(200);
   });
   it("returns a 404 if provider does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/providers/12345")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404, { error: "Provider not found" });
   });
   it("returns a 404 if provider does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/providers/abcd")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404, { error: "Not found" });
@@ -51,7 +52,8 @@ describe("GET /providers/:id", () => {
 
 describe("POST /providers", () => {
   it("creates a new provider", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .post("/providers")
       .send({
         name: "test create provider " + Math.floor(Math.random() * 100),
@@ -63,7 +65,8 @@ describe("POST /providers", () => {
       .expect(201);
   });
   it("returns a 400 if provider already exists", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .post("/providers")
       .send({
         name: "Goldner Group",
@@ -75,7 +78,8 @@ describe("POST /providers", () => {
       .expect(400, { error: "Provider already exists" });
   });
   it("returns a 400 if data is invalid", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .post("/providers")
       .send({})
       .expect("Content-Type", "application/json; charset=utf-8")
@@ -89,7 +93,8 @@ describe("POST /providers", () => {
 
 describe("PUT /providers/:id", () => {
   it("updates the corresponding provider based on its ID", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/providers/2")
       .send({
         name: "test update provider",
@@ -101,7 +106,8 @@ describe("PUT /providers/:id", () => {
       .expect(200);
   });
   it("returns a 404 if provider does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/providers/12345")
       .send({
         name: "test update provider",
@@ -113,7 +119,8 @@ describe("PUT /providers/:id", () => {
       .expect(404, { error: "Provider not found" });
   });
   it("returns a 404 if provider does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/providers/abcd")
       .send({
         name: "test update provider",
@@ -125,7 +132,8 @@ describe("PUT /providers/:id", () => {
       .expect(404);
   });
   it("returns a 400 if data is invalid", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/providers/2")
       .send({})
       .expect("Content-Type", "application/json; charset=utf-8")
@@ -139,19 +147,22 @@ describe("PUT /providers/:id", () => {
 
 describe("DELETE /providers/:id", () => {
   it("deletes the corresponding provider based on its ID", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .delete("/providers/" + inc)
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(200);
   });
   it("returns a 404 if provider does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .delete("/providers/12345")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404);
   });
   it("returns a 404 if provider does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .delete("/providers/abcd")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404);

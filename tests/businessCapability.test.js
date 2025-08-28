@@ -1,6 +1,5 @@
 import { it, describe, expect, expectTypeOf } from "vitest";
-import request from "supertest";
-import { app } from "../app.js";
+import { createAuthenticatedAgent } from "./authHelper.js";
 
 let inc = 8;
 console.log("inc :", inc);
@@ -11,7 +10,8 @@ console.log("inc :", inc);
 
 describe("GET /businesscapabilities", () => {
   it("returns all business capabilitys", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/businesscapabilities")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(200);
@@ -24,19 +24,22 @@ describe("GET /businesscapabilities", () => {
 
 describe("GET /businesscapabilities/:id", () => {
   it("returns the corresponding business capability based on its ID", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/businesscapabilities/2")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(200);
   });
   it("returns a 404 if business capability does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/businesscapabilities/12345")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404, { error: "BusinessCapability not found" });
   });
   it("returns a 404 if business capability does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/businesscapabilities/abcd")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404, { error: "Not found" });
@@ -49,7 +52,8 @@ describe("GET /businesscapabilities/:id", () => {
 
 describe("POST /businesscapabilities", () => {
   it("creates a new business capability", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .post("/businesscapabilities")
       .send({
         name: "test" + Math.floor(Math.random() * 100),
@@ -59,7 +63,8 @@ describe("POST /businesscapabilities", () => {
       .expect(201);
   });
   it("returns a 400 if business capability already exists", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .post("/businesscapabilities")
       .send({
         name: "ok",
@@ -69,7 +74,8 @@ describe("POST /businesscapabilities", () => {
       .expect(400, { error: "BusinessCapability already exists" });
   });
   it("returns a 400 if data is invalid", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .post("/businesscapabilities")
       .send({})
       .expect("Content-Type", "application/json; charset=utf-8")
@@ -83,7 +89,8 @@ describe("POST /businesscapabilities", () => {
 
 describe("PUT /businesscapabilities/:id", () => {
   it("updates the name & departement of an existing business capability", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/businesscapabilities/2")
       .send({
         name: "test update business capability",
@@ -93,7 +100,8 @@ describe("PUT /businesscapabilities/:id", () => {
       .expect(200);
   });
   it("updates the name of an existing business capability", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/businesscapabilities/4")
       .send({
         name:
@@ -103,7 +111,8 @@ describe("PUT /businesscapabilities/:id", () => {
       .expect(200);
   });
   it("updates the department of an existing business capability", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/businesscapabilities/3")
       .send({
         department: Math.floor(Math.random() * 5),
@@ -112,7 +121,8 @@ describe("PUT /businesscapabilities/:id", () => {
       .expect(200);
   });
   it("returns a 404 if business capability does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/businesscapabilities/12345")
       .send({
         name: "test update business capability",
@@ -121,7 +131,8 @@ describe("PUT /businesscapabilities/:id", () => {
       .expect(404, { error: "BusinessCapability not found" });
   });
   it("returns a 404 if business capability does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/businesscapabilities/abcd")
       .send({
         name: "test update business capability",
@@ -130,7 +141,8 @@ describe("PUT /businesscapabilities/:id", () => {
       .expect(404, { error: "Not found" });
   });
   it("returns a 400 if data is invalid", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/businesscapabilities/2")
       .send({})
       .expect("Content-Type", "application/json; charset=utf-8")
@@ -144,19 +156,22 @@ describe("PUT /businesscapabilities/:id", () => {
 
 describe("DELETE /businesscapabilities/:id", () => {
   it("deletes the corresponding business capability based on its ID", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .delete("/businesscapabilities/" + inc)
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(200);
   });
   it("returns a 404 if business capability does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .delete("/businesscapabilities/12345")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404);
   });
   it("returns a 404 if business capability does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .delete("/businesscapabilities/abcd")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404);

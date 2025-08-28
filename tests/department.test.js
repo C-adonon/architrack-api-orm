@@ -1,8 +1,5 @@
 import { it, describe, expect, expectTypeOf } from "vitest";
-import request from "supertest";
-import { app } from "../app.js";
-
-// TODO: add token when auth is implemented
+import { createAuthenticatedAgent } from "./authHelper.js";
 
 let inc = 5;
 console.log("inc :", inc);
@@ -13,7 +10,8 @@ console.log("inc :", inc);
 
 describe("GET /departments", () => {
   it("returns all departments", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/departments")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(200);
@@ -26,19 +24,22 @@ describe("GET /departments", () => {
 
 describe("GET /departments/:id", () => {
   it("returns the corresponding department based on its ID", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/departments/2")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(200);
   });
   it("returns a 404 if department does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/departments/12345")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404, { error: "Department not found" });
   });
   it("returns a 404 if department does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/departments/abcd")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404, { error: "Not found" });
@@ -51,7 +52,8 @@ describe("GET /departments/:id", () => {
 
 describe("POST /departments", () => {
   it("creates a new department", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .post("/departments")
       .send({
         name: "test create department" + inc,
@@ -61,7 +63,8 @@ describe("POST /departments", () => {
   });
   inc++;
   it("returns a 400 if department already exists", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .post("/departments")
       .send({
         name: "Java",
@@ -70,7 +73,8 @@ describe("POST /departments", () => {
       .expect(400, { error: "Department already exists" });
   });
   it("returns a 400 if data is invalid", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .post("/departments")
       .send({})
       .expect("Content-Type", "application/json; charset=utf-8")
@@ -84,7 +88,8 @@ describe("POST /departments", () => {
 
 describe("PUT /departments/:id", () => {
   it("updates an existing department", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/departments/2")
       .send({
         name: "test update department " + Math.floor(Math.random() * 100),
@@ -93,7 +98,8 @@ describe("PUT /departments/:id", () => {
       .expect(200);
   });
   it("returns a 404 if department does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/departments/12345")
       .send({
         name: "test update department 12345",
@@ -102,7 +108,8 @@ describe("PUT /departments/:id", () => {
       .expect(404, { error: "Department not found" });
   });
   it("returns a 404 if department does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/departments/abcd")
       .send({
         name: "test update department abcd",
@@ -111,7 +118,8 @@ describe("PUT /departments/:id", () => {
       .expect(404, { error: "Not found" });
   });
   it("returns a 400 if data is invalid", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/departments/2")
       .send({})
       .expect("Content-Type", "application/json; charset=utf-8")
@@ -125,19 +133,22 @@ describe("PUT /departments/:id", () => {
 
 describe("DELETE /departments/:id", () => {
   it("deletes the corresponding department based on its ID", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .delete("/departments/" + inc)
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(200);
   });
   it("returns a 404 if department does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .delete("/departments/12345")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404, { error: "Department not found" });
   });
   it("returns a 404 if department does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .delete("/departments/abcd")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404, { error: "Not found" });

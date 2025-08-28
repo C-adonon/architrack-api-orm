@@ -6,9 +6,18 @@ export const createAuthenticatedAgent = async () => {
 
   await agent.post("/auth/login").send({
     email: "ok@corp.com",
-    password:
-      "$argon2id$v=19$m=65536,t=3,p=4$YOHHpnxhYjcJDO0MOxM3gQ$KM3hJVHxRfOnvIbVqlacS6Or+V8k6LlF2w8jpBVwaDM",
+    password: "ok",
   });
 
+  console.log("Login status:", loginResponse.status);
+  console.log("Login headers:", loginResponse.headers);
+  console.log("Login body:", loginResponse.body);
+
+  const cookies = loginResponse.headers["set-cookie"];
+  console.log("Cookies received:", cookies);
+
+  if (loginResponse.status !== 200) {
+    throw new Error(`Login failed with status ${loginResponse.status}`);
+  }
   return agent;
 };

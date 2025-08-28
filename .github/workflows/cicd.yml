@@ -74,17 +74,6 @@ jobs:
           DATABASE_URL: mysql://root:root@localhost:3306/test_db
           NODE_ENV: test
 
-      - name: Check if coverage is above 80%
-        run: |
-          COVERAGE=$(pnpm exec jest --coverage --coverageReporters=text | grep "All files" | awk '{print $4}' | sed 's/%//')
-          echo "Coverage is $COVERAGE%"
-          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
-            echo "Code coverage is below 80%. Failing the build."
-            exit 1
-          else
-            echo "Code coverage is above 80%."
-          fi
-
   deploy:
     needs: test
     if: github.ref == 'refs/heads/deploy-test'

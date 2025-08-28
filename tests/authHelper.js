@@ -6,7 +6,8 @@ export const createAuthenticatedAgent = async () => {
 
   await agent.post("/auth/login").send({
     email: "ok@corp.com",
-    password: "ok",
+    password:
+      "$argon2id$v=19$m=65536,t=3,p=4$YOHHpnxhYjcJDO0MOxM3gQ$KM3hJVHxRfOnvIbVqlacS6Or+V8k6LlF2w8jpBVwaDMk",
   });
 
   return agent;

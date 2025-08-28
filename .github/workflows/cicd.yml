@@ -41,11 +41,11 @@ jobs:
         run: |
           echo "DATABASE_URL=mysql://root:root@localhost:3306/test_db" > .env.test
           echo "NODE_ENV=test" >> .env.test
-          echo JWT_SECRET="secret" >> .env.test
-          echo JWT_ACCESS_SECRET="secret" >> .env.test
-          echo JWT_ACCESS_EXPIRES_IN="10m" >> .env.test
-          echo JWT_REFRESH_SECRET="secret" >> .env.test
-          echo JWT_REFRESH_EXPIRES_IN="7h" >> .env.test
+          echo "JWT_SECRET=secret" >> .env.test
+          echo "JWT_ACCESS_SECRET=secret" >> .env.test
+          echo "JWT_ACCESS_EXPIRES_IN=10m" >> .env.test
+          echo "JWT_REFRESH_SECRET=secret" >> .env.test
+          echo "JWT_REFRESH_EXPIRES_IN=7h" >> .env.test
 
       - name: Generate Prisma Client
         run: npx prisma generate

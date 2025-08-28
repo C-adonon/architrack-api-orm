@@ -1,6 +1,5 @@
 import { it, describe, expect, expectTypeOf } from "vitest";
-import request from "supertest";
-import { app } from "../app.js";
+import { createAuthenticatedAgent } from "./authHelper.js";
 
 let inc = 18;
 console.log("inc :", inc);
@@ -11,7 +10,8 @@ console.log("inc :", inc);
 
 describe("GET /applications", () => {
   it("returns all business capabilities", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/applications")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(200);
@@ -24,19 +24,22 @@ describe("GET /applications", () => {
 
 describe("GET /applications/:id", () => {
   it("returns the corresponding application based on its ID", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/applications/7")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(200);
   });
   it("returns a 404 if application does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/applications/12345")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404, { error: "Application not found" });
   });
   it("returns a 404 if application does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/applications/abcd")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404, { error: "Not found" });
@@ -49,7 +52,8 @@ describe("GET /applications/:id", () => {
 
 describe("POST /applications", () => {
   it("creates a new application", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .post("/applications")
       .send({
         name: "test" + Math.floor(Math.random() * 100),
@@ -69,7 +73,8 @@ describe("POST /applications", () => {
       .expect(201);
   });
   it("returns a 400 if application already exists", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .post("/applications")
       .send({
         name: "okok",
@@ -78,7 +83,8 @@ describe("POST /applications", () => {
       .expect(400);
   });
   it("returns a 400 if data is invalid", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .post("/applications")
       .send({})
       .expect("Content-Type", "application/json; charset=utf-8")
@@ -92,7 +98,8 @@ describe("POST /applications", () => {
 
 describe("PUT /applications/:id", () => {
   it("updates some parameters of an existing application", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/applications/2")
       .send({
         description: "Other test" + Math.floor(Math.random() * 100),
@@ -105,7 +112,8 @@ describe("PUT /applications/:id", () => {
       .expect(200);
   });
   it("updates an existing application", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/applications/4")
       .send({
         providerId: Math.floor(Math.random() * 5),
@@ -114,7 +122,8 @@ describe("PUT /applications/:id", () => {
       .expect(200);
   });
   it("updates an existing application", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/applications/3")
       .send({
         validationStatus: "VALIDATED",
@@ -123,7 +132,8 @@ describe("PUT /applications/:id", () => {
       .expect(200);
   });
   it("returns a 404 if application does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/applications/12345")
       .send({
         name: "test update application",
@@ -132,7 +142,8 @@ describe("PUT /applications/:id", () => {
       .expect(404, { error: "Application not found" });
   });
   it("returns a 404 if application does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/applications/abcd")
       .send({
         name: "test update application",
@@ -141,7 +152,8 @@ describe("PUT /applications/:id", () => {
       .expect(404, { error: "Not found" });
   });
   it("returns a 400 if data is invalid", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/applications/2")
       .send({})
       .expect("Content-Type", "application/json; charset=utf-8")
@@ -155,19 +167,22 @@ describe("PUT /applications/:id", () => {
 
 describe("DELETE /applications/:id", () => {
   it("deletes the corresponding application based on its ID", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .delete("/applications/" + inc)
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(200);
   });
   it("returns a 404 if application does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .delete("/applications/12345")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404);
   });
   it("returns a 404 if application does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .delete("/applications/abcd")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404);

@@ -1,8 +1,5 @@
 import { it, describe, expect, expectTypeOf } from "vitest";
-import request from "supertest";
-import { app } from "../app.js";
-
-// TODO: add token when auth is implemented
+import { createAuthenticatedAgent } from "./authHelper.js";
 
 let inc = 13;
 inc++;
@@ -14,7 +11,8 @@ console.log("inc :", inc);
 
 describe("GET /languages", () => {
   it("returns all languages", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/languages")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(200);
@@ -27,19 +25,22 @@ describe("GET /languages", () => {
 
 describe("GET /languages/:id", () => {
   it("returns the corresponding language based on its ID", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/languages/2")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(200);
   });
   it("returns a 404 if language does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/languages/12345")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404, { error: "Language not found" });
   });
   it("returns a 404 if language does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .get("/languages/abcd")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404, { error: "Not found" });
@@ -52,7 +53,8 @@ describe("GET /languages/:id", () => {
 
 describe("POST /languages", () => {
   it("creates a new language", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .post("/languages")
       .send({
         name: "test create language" + inc,
@@ -62,7 +64,8 @@ describe("POST /languages", () => {
   });
   inc++;
   it("returns a 400 if language already exists", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .post("/languages")
       .send({
         name: "Java",
@@ -71,7 +74,8 @@ describe("POST /languages", () => {
       .expect(400, { error: "Language already exists" });
   });
   it("returns a 400 if data is invalid", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .post("/languages")
       .send({})
       .expect("Content-Type", "application/json; charset=utf-8")
@@ -85,7 +89,8 @@ describe("POST /languages", () => {
 
 describe("PUT /languages/:id", () => {
   it("updates an existing language", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/languages/2")
       .send({
         name: "test update language " + Math.floor(Math.random() * 100),
@@ -94,7 +99,8 @@ describe("PUT /languages/:id", () => {
       .expect(200);
   });
   it("returns a 404 if language does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/languages/12345")
       .send({
         name: "test update language 12345",
@@ -103,7 +109,8 @@ describe("PUT /languages/:id", () => {
       .expect(404, { error: "Language not found" });
   });
   it("returns a 404 if language does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/languages/abcd")
       .send({
         name: "test update language abcd",
@@ -112,7 +119,8 @@ describe("PUT /languages/:id", () => {
       .expect(404, { error: "Not found" });
   });
   it("returns a 400 if data is invalid", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .put("/languages/2")
       .send({})
       .expect("Content-Type", "application/json; charset=utf-8")
@@ -126,19 +134,22 @@ describe("PUT /languages/:id", () => {
 
 describe("DELETE /languages/:id", () => {
   it("deletes the corresponding language based on its ID", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .delete("/languages/" + inc)
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(200);
   });
   it("returns a 404 if language does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .delete("/languages/12345")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404, { error: "Language not found" });
   });
   it("returns a 404 if language does not exist", async () => {
-    const response = await request(app)
+    const agent = await createAuthenticatedAgent();
+    const response = await agent
       .delete("/languages/abcd")
       .expect("Content-Type", "application/json; charset=utf-8")
       .expect(404, { error: "Not found" });
